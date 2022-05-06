@@ -1,0 +1,101 @@
+file build/eva.elf
+target remote :2331
+set pagination off
+set print pretty on
+
+define parse_sp
+	set $armex_base = $arg0
+
+	printf "xPSR            0x%x\n", *($armex_base+28)
+	printf "ReturnAddress   0x%x\n", *($armex_base+24)
+	printf "LR (R14)        0x%x\n", *($armex_base+20)
+	printf "R12             0x%x\n", *($armex_base+16)
+	printf "R3              0x%x\n", *($armex_base+12)
+	printf "R2              0x%x\n", *($armex_base+8)
+	printf "R1              0x%x\n", *($armex_base+4)
+	printf "R0              0x%x\n", *($armex_base)
+	printf "Return instruction:\n"
+	x/i *($armex_base+24)
+	printf "LR instruction:\n"
+	x/i *($armex_base+20)
+end
+
+define checksp
+	printf "next return ",
+	if (($lr & 0x4) == 0x4)
+		printf "uses msp 0x%x.\n", $msp
+	else
+		printf "uses psp 0x%x.\n", $psp
+	end
+	info registers sp msp psp
+	#printf "main stack:[0x%x - 0x%x, %d]\n", &Stack_Mem, &__initial_sp, (char *)&__initial_sp - (char *)&Stack_Mem
+end
+
+define hook-stop
+	#checksp
+end
+
+define find_next_node
+	set $_list = $arg0
+
+	set $offset = (char *)&(($arg1 *)0)->$arg2 - (char *)0
+
+	set $node = ($arg1 *)((char *)$_list->next - $offset)
+
+	if &$node->$arg2.next == $list_head
+		set $node = 0
+	end
+end
+
+# $arg0 should be the address of the list_head
+# $arg1 should be the object type of the list item
+# $arg2 should be the object list field name
+define dump_list
+	set $list_head = $arg0
+	set $loop = $arg0
+
+	find_next_node $loop $arg1 $arg2
+	while $node
+		p *$node
+
+		set $loop = &$node->$arg2
+
+		find_next_node $loop $arg1 $arg2
+	end
+end
+
+b HardFault_Handler
+b BusFault_Handler
+b UsageFault_Handler
+b WWDG_IRQHandler
+b main
+b app
+	commands
+		c
+	end
+#b HAL_CAN_TxCpltCallback
+#	commands
+#		c
+#	end
+#b HAL_CAN_RxCpltCallback
+#	commands
+#		c
+#	end
+#b HAL_CAN_ErrorCallback
+#	commands
+#		p *hcan
+#		c
+#	end
+
+b dummy_log
+	commands
+		silent
+		printf "%s", buffer
+		c
+	end
+
+b app_panic
+
+
+#monitor reset
+continue
