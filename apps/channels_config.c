@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年05月05日 星期四 16时02分54秒
+ *   修改日期：2022年05月12日 星期四 11时06分04秒
  *   描    述：
  *
  *================================================================*/
@@ -153,16 +153,16 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_NOBMS,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_CCS,
 		.hcan_bms = &hcan2,
 	},
 	.energy_meter_config = {
-		.default_type = ENERGY_METER_TYPE_NONE,
+		.default_type = ENERGY_METER_TYPE_DC,
 		.size = ARRAY_SIZE(energy_meter_config_item_0_sz),
 		.items = energy_meter_config_item_0_sz,
 	},
 	.function_board_config = {
-		.default_type = FUNCTION_BOARD_TYPE_NONE,
+		.default_type = FUNCTION_BOARD_TYPE_485,
 		.size = ARRAY_SIZE(function_board_config_item_0_sz),
 		.items = function_board_config_item_0_sz,
 	},
@@ -182,9 +182,9 @@ static channel_config_t channel3_config = {
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
-	&channel1_config,
-	&channel2_config,
-	&channel3_config,
+	//&channel1_config,
+	//&channel2_config,
+	//&channel3_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {

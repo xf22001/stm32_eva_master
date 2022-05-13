@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年04月20日 星期三 15时02分39秒
+ *   修改日期：2022年05月12日 星期四 11时09分54秒
  *   描    述：
  *
  *================================================================*/
@@ -25,6 +25,7 @@
 #include "channels.h"
 #include "card_reader.h"
 #include "power_manager.h"
+#include "config_layout.h"
 
 #include "sal_hook.h"
 
@@ -657,6 +658,52 @@ static void fn18(request_t *request)
 	start_dump_channels_stats();
 }
 
+//19 0 453930000017
+static void fn19(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int channel_id;
+	unsigned int addr5;
+	unsigned int addr4;
+	unsigned int addr3;
+	unsigned int addr2;
+	unsigned int addr1;
+	unsigned int addr0;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %2x%2x%2x%2x%2x%02x%n",
+	             &fn,
+	             &channel_id,
+	             &addr5,
+	             &addr4,
+	             &addr3,
+	             &addr2,
+	             &addr1,
+	             &addr0,
+	             &catched);
+
+	if(ret == 8) {
+		channels_info_t *channels_info = get_channels();
+		channel_info_t *channel_info = channels_info->channel_info + channel_id;
+		channel_settings_t *channel_settings = &channel_info->channel_settings;
+		config_layout_t *config_layout = get_config_layout();
+		size_t offset = (size_t)&config_layout->channels_settings_seg.settings.storage_channel_settings[channel_info->channel_id].channel_settings;
+
+		channel_settings->energy_meter_settings.dlt_645_addr.data[5] = addr5;
+		channel_settings->energy_meter_settings.dlt_645_addr.data[4] = addr4;
+		channel_settings->energy_meter_settings.dlt_645_addr.data[3] = addr3;
+		channel_settings->energy_meter_settings.dlt_645_addr.data[2] = addr2;
+		channel_settings->energy_meter_settings.dlt_645_addr.data[1] = addr1;
+		channel_settings->energy_meter_settings.dlt_645_addr.data[0] = addr0;
+		debug("offset:%d", offset);
+		save_config_item(channels_info->storage_info, "channel_info->channel_settings", &channel_info->channel_settings, sizeof(channel_settings_t), offset);
+	} else {
+		debug("ret:%d", ret);
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -676,6 +723,7 @@ static server_item_t server_map[] = {
 	{16, fn16},
 	{17, fn17},
 	{18, fn18},
+	{19, fn19},
 };
 
 server_map_info_t server_map_info = {
