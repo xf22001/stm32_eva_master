@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年05月12日 星期四 11时09分54秒
+ *   修改日期：2022年05月28日 星期六 15时39分58秒
  *   描    述：
  *
  *================================================================*/
@@ -704,6 +704,38 @@ static void fn19(request_t *request)
 	}
 }
 
+//20 0 2000 10 0
+static void fn20(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int channel_id;
+	int voltage;
+	int current;
+	int require_mode;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %d %d %d %n",
+	             &fn,
+	             &channel_id,
+	             &voltage,
+	             &current,
+	             &require_mode,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 5) {
+		channels_info_t *channels_info = get_channels();
+		channel_info_t *channel_info = channels_info->channel_info + channel_id;
+
+		channel_require_update(channel_info, voltage, current, require_mode);
+
+		debug("set channel %d voltage:%d, current:%d, require_mode:%d!", channel_id, voltage, current, require_mode);
+	}
+}
+
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -724,6 +756,7 @@ static server_item_t server_map[] = {
 	{17, fn17},
 	{18, fn18},
 	{19, fn19},
+	{20, fn20},
 };
 
 server_map_info_t server_map_info = {

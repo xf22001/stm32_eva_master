@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年05月12日 星期四 11时06分04秒
+ *   修改日期：2022年05月28日 星期六 15时17分35秒
  *   描    述：
  *
  *================================================================*/
@@ -89,6 +89,7 @@ char *get_channel_config_function_board_type_des(function_board_type_t type)
 			add_des_case(FUNCTION_BOARD_TYPE_NONE);
 			add_des_case(FUNCTION_BOARD_TYPE_485);
 			add_des_case(FUNCTION_BOARD_TYPE_MODBUS);
+			add_des_case(FUNCTION_BOARD_TYPE_V5);
 
 		default: {
 		}
@@ -207,7 +208,7 @@ static channels_config_t channels_config_0 = {
 	.channel_config = channel_config_sz,
 	.power_module_config = {
 		.hcan = &hcan1,
-		.power_module_default_type = POWER_MODULE_TYPE_PSEUDO,
+		.power_module_default_type = POWER_MODULE_TYPE_INCREASE,
 	},
 	.power_manager_config = {
 		.power_manager_default_type = POWER_MANAGER_TYPE_NATIVE,
