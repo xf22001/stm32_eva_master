@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年05月28日 星期六 15时39分58秒
+ *   修改日期：2022年05月28日 星期六 17时14分57秒
  *   描    述：
  *
  *================================================================*/
@@ -699,6 +699,7 @@ static void fn19(request_t *request)
 		channel_settings->energy_meter_settings.dlt_645_addr.data[0] = addr0;
 		debug("offset:%d", offset);
 		save_config_item(channels_info->storage_info, "channel_info->channel_settings", &channel_info->channel_settings, sizeof(channel_settings_t), offset);
+		HAL_NVIC_SystemReset();
 	} else {
 		debug("ret:%d", ret);
 	}
