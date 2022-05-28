@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年05月28日 星期六 15时17分35秒
+ *   修改日期：2022年05月28日 星期六 20时47分10秒
  *   描    述：
  *
  *================================================================*/
@@ -159,6 +159,9 @@ static channel_config_t channel0_config = {
 	},
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_DC,
+		.energy_accuracy = VALUE_ACCURACY_2,
+		.voltage_accuracy = VALUE_ACCURACY_1,
+		.curent_accuracy = VALUE_ACCURACY_3,
 		.size = ARRAY_SIZE(energy_meter_config_item_0_sz),
 		.items = energy_meter_config_item_0_sz,
 	},
