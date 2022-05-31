@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年11月30日 星期二 15时07分16秒
- *   修改日期：2022年05月30日 星期一 13时07分55秒
+ *   修改日期：2022年05月31日 星期二 14时15分13秒
  *   描    述：
  *
  *================================================================*/
@@ -34,7 +34,7 @@ void power_manager_restore_config(channels_info_t *channels_info)
 
 		for(j = 0; j < power_manager_group_settings->power_module_group_number; j++) {
 			power_module_group_settings_t *power_module_group_settings = &power_manager_group_settings->power_module_group_settings[j];
-			power_module_group_settings->power_module_number = 2;
+			power_module_group_settings->power_module_number = 1;
 		}
 	}
 }
