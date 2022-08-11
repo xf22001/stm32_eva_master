@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年05月28日 星期六 20时47分10秒
+ *   修改日期：2022年06月29日 星期三 17时00分03秒
  *   描    述：
  *
  *================================================================*/
@@ -154,7 +154,7 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_CCS,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_NOBMS,
 		.hcan_bms = &hcan2,
 	},
 	.energy_meter_config = {
@@ -211,7 +211,7 @@ static channels_config_t channels_config_0 = {
 	.channel_config = channel_config_sz,
 	.power_module_config = {
 		.hcan = &hcan1,
-		.power_module_default_type = POWER_MODULE_TYPE_INCREASE,
+		.power_module_default_type = POWER_MODULE_TYPE_WINLINE,
 	},
 	.power_manager_config = {
 		.power_manager_default_type = POWER_MANAGER_TYPE_NATIVE,
@@ -360,4 +360,37 @@ proxy_channel_item_t *get_proxy_channel_item_by_channel_id(proxy_channel_info_t 
 	}
 
 	return item;
+}
+
+int adc_value_helper(adc_value_type_t adc_value_type, uint16_t adc_value)
+{
+	int value = 0;
+
+	switch(adc_value_type) {
+		case ADC_VALUE_TYPE_BOARD_TEMPERATURE: {
+			value = get_ntc_temperature(10000, adc_value, 4095);
+		}
+		break;
+
+		case ADC_VALUE_TYPE_CP_AD_VOLTAGE: {
+			value = adc_value * 3300 / 4096;//0v-1.2v 采样 0v-12v
+
+			//(V - 0.5) * 2 / 102 * 8 * 4 / 3 = u
+			//V - 0.5 = u / (2 / 102 * 8 * 4 / 3)
+			//修正前
+			//V = u / (2 / 102 * 8 * 4 / 3) + 0.5
+			//修正后
+			//V = u / (1.8667 / 101.8667 * 8 * 4 / 3) + 0.5
+
+			value = value * 5.1159817458616805 / 10 + 50;
+		}
+		break;
+
+		default: {
+			app_panic();
+		}
+		break;
+	}
+
+	return value;
 }

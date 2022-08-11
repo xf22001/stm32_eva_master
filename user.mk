@@ -23,6 +23,7 @@ USER_C_INCLUDES += -Iapps/modules/hardware
 USER_C_INCLUDES += -Iapps/modules/app
 USER_C_INCLUDES += -Iapps/modules/app/charger
 USER_C_INCLUDES += -Iapps/modules/app/power_modules
+USER_C_INCLUDES += -Iapps/modules/app/power_manager
 USER_C_INCLUDES += -Iapps/modules/app/ftpd
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/app/net_client
@@ -41,10 +42,10 @@ USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
 USER_C_SOURCES += apps/storage_config.c
 USER_C_SOURCES += apps/gpio_map.c
-USER_C_SOURCES += apps/channels_addr_handler.c
+USER_C_SOURCES += apps/modbus_addr_handler.c
 USER_C_SOURCES += apps/display_cache.c
 USER_C_SOURCES += apps/channels_notify_voice.c
-USER_C_SOURCES += apps/power_manager_group_policy_handler.c
+USER_C_SOURCES += apps/power_manager_group_policy_config.c
 ifneq ($(call ifdef_any_of,ENABLE_CXX),)
 USER_CPP_SOURCES += apps/modules/tests/test_cpp.cpp
 endif
@@ -109,6 +110,9 @@ USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_stategrid
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_yyln.c
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_winline.c
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
+USER_C_SOURCES += apps/modules/app/power_manager/power_manager.c
+USER_C_SOURCES += apps/modules/app/power_manager/power_manager_handler_native.c
+USER_C_SOURCES += apps/modules/app/power_manager/power_manager_group_policy_chain.c
 USER_C_SOURCES += apps/modules/app/charger/channels.c
 USER_C_SOURCES += apps/modules/app/charger/channel.c
 ifneq ($(call ifdef_any_of,CHARGER_CHANNEL_NATIVE),)
@@ -131,13 +135,10 @@ endif
 USER_C_SOURCES += apps/modules/app/charger/charger.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
 ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB),)
-USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
-endif
-ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_CCS),)
-USER_C_SOURCES += apps/modules/app/charger/charger_bms_plc_ccs.c
-endif
-ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB CHARGER_BMS_HANDLER_CCS),)
 USER_C_SOURCES += apps/modules/app/bms_multi_data.c
+USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
+USER_C_SOURCES += apps/modules/app/charger/charger_bms_jp.c
+USER_C_SOURCES += apps/modules/app/charger/charger_bms_plc_ccs.c
 USER_C_SOURCES += apps/modules/app/charger/function_board.c
 USER_C_SOURCES += apps/modules/app/charger/function_board_handler_485.c
 USER_C_SOURCES += apps/modules/app/charger/function_board_handler_v5.c
@@ -148,8 +149,6 @@ endif
 ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_NOBMS),)
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_nobms.c
 endif
-USER_C_SOURCES += apps/modules/app/charger/power_manager.c
-USER_C_SOURCES += apps/modules/app/charger/power_manager_handler_native.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_dc.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac.c
