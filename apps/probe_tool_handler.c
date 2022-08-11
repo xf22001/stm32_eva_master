@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年05月30日 星期一 09时01分26秒
+ *   修改日期：2022年08月11日 星期四 15时56分03秒
  *   描    述：
  *
  *================================================================*/
@@ -23,8 +23,13 @@
 #include "app.h"
 #include "ftp_client.h"
 #include "channels.h"
+#include "channel.h"
+#if defined(ENABLE_CARDREADER)
 #include "card_reader.h"
+#endif
+#if defined(ENABLE_POWER_MANAGER)
 #include "power_manager.h"
+#endif
 #include "config_layout.h"
 
 #include "sal_hook.h"
@@ -521,8 +526,8 @@ static void fn14(request_t *request)
 
 		switch(type) {
 			case CHANNEL_EVENT_TYPE_START_CHANNEL: {
-				channel_info->channel_event_start_display.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
-				channel_info->channel_event_start_display.start_reason = CHANNEL_RECORD_ITEM_START_REASON_BMS;
+				channel_info->channel_event_start_bms.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+				channel_info->channel_event_start_bms.start_reason = CHANNEL_RECORD_ITEM_START_REASON_BMS;
 			}
 			break;
 
@@ -538,7 +543,7 @@ static void fn14(request_t *request)
 
 		channel_event->channel_id = channel_id;
 		channel_event->type = type;
-		channel_event->ctx = &channel_info->channel_event_start_display;
+		channel_event->ctx = &channel_info->channel_event_start_bms;
 
 		channels_event->type = CHANNELS_EVENT_CHANNEL;
 		channels_event->event = channel_event;
@@ -572,6 +577,7 @@ static void fn15(request_t *request)
 	}
 }
 
+#if defined(ENABLE_CARDREADER)
 static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
 	account_response_info_t *account_response_info = (account_response_info_t *)chain_ctx;
@@ -635,6 +641,7 @@ static void fn16(request_t *request)
 		start_card_reader_cb(card_reader_info, &card_reader_cb);
 	}
 }
+#endif
 
 static void fn17(request_t *request)
 {
@@ -655,7 +662,9 @@ static void fn17(request_t *request)
 
 static void fn18(request_t *request)
 {
+#if defined(ENABLE_POWER_MANAGER)
 	start_dump_channels_stats();
+#endif
 }
 
 //19 0 453930000013
@@ -753,7 +762,9 @@ static server_item_t server_map[] = {
 	{13, fn13},
 	{14, fn14},
 	{15, fn15},
+#if defined(ENABLE_CARDREADER)
 	{16, fn16},
+#endif
 	{17, fn17},
 	{18, fn18},
 	{19, fn19},
