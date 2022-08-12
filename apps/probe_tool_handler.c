@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年08月11日 星期四 15时56分03秒
+ *   修改日期：2022年08月12日 星期五 09时45分35秒
  *   描    述：
  *
  *================================================================*/
@@ -24,9 +24,7 @@
 #include "ftp_client.h"
 #include "channels.h"
 #include "channel.h"
-#if defined(ENABLE_CARDREADER)
 #include "card_reader.h"
-#endif
 #if defined(ENABLE_POWER_MANAGER)
 #include "power_manager.h"
 #endif
@@ -577,7 +575,7 @@ static void fn15(request_t *request)
 	}
 }
 
-#if defined(ENABLE_CARDREADER)
+#if !defined(DISABLE_CARDREADER)
 static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
 	account_response_info_t *account_response_info = (account_response_info_t *)chain_ctx;
@@ -762,7 +760,7 @@ static server_item_t server_map[] = {
 	{13, fn13},
 	{14, fn14},
 	{15, fn15},
-#if defined(ENABLE_CARDREADER)
+#if !defined(DISABLE_CARDREADER)
 	{16, fn16},
 #endif
 	{17, fn17},

@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2022年08月11日 星期四 17时31分04秒
+ *   修改日期：2022年08月12日 星期五 09时43分27秒
  *   描    述：
  *
  *================================================================*/
@@ -92,7 +92,7 @@ void send_app_event(app_event_t event, uint32_t timeout)
 	signal_send(app_event, event, timeout);
 }
 
-#if defined(ENABLE_DISPLAY)
+#if !defined(DISABLE_DISPLAY)
 static void app_mechine_info_invalid(void *fn_ctx, void *chain_ctx)
 {
 	app_info_t *app_info = (app_info_t *)fn_ctx;
@@ -205,7 +205,7 @@ void app(void const *argument)
 {
 	poll_loop_t *poll_loop;
 	channels_info_t *channels_info = NULL;
-#if defined(ENABLE_DISPLAY)
+#if !defined(DISABLE_DISPLAY)
 	display_info_t *display_info = NULL;
 #endif
 	int ret;
@@ -247,7 +247,7 @@ void app(void const *argument)
 		app_save_config();
 	}
 
-#if defined(ENABLE_DISPLAY)
+#if !defined(DISABLE_DISPLAY)
 	load_app_display_cache(app_info);
 #endif
 
@@ -297,7 +297,7 @@ void app(void const *argument)
 	}
 #endif
 
-#if defined(ENABLE_VOICE)
+#if !defined(DISABLE_VOICE)
 	if(init_channels_notify_voice(channels_info) != 0) {
 		debug("");
 	}

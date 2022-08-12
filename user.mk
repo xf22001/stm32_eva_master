@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2022年08月11日 星期四 17时17分57秒
+#   修改日期：2022年08月12日 星期五 09时39分27秒
 #   描    述：
 #
 #================================================================
@@ -42,14 +42,14 @@ USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
 USER_C_SOURCES += apps/storage_config.c
 USER_C_SOURCES += apps/gpio_map.c
-ifneq ($(call ifdef_any_of,ENABLE_DISPLAY),)
+ifeq ($(call ifdef_any_of,DISABLE_DISPLAY),)
 USER_C_SOURCES += apps/modbus_addr_handler.c
 USER_C_SOURCES += apps/display_cache.c
 endif
-ifneq ($(call ifdef_any_of,ENABLE_VOICE),)
+ifeq ($(call ifdef_any_of,DISABLE_VOICE),)
 USER_C_SOURCES += apps/channels_notify_voice.c
 endif
-ifneq ($(call ifdef_any_of,ENABLE_POWER_MANAGER),)
+ifeq ($(call ifdef_any_of,DISABLE_POWER_MANAGER),)
 USER_C_SOURCES += apps/power_manager_group_policy_config.c
 endif
 ifneq ($(call ifdef_any_of,ENABLE_CXX),)
@@ -104,13 +104,13 @@ USER_C_SOURCES += apps/modules/app/pt_temperature.c
 USER_C_SOURCES += apps/modules/app/can_command.c
 USER_C_SOURCES += apps/modules/app/usb_upgrade.c
 USER_C_SOURCES += apps/modules/app/firmware_upgrade_internal_flash.c
-ifneq ($(call ifdef_any_of,ENABLE_DISPLAY),)
+ifeq ($(call ifdef_any_of,DISABLE_DISPLAY),)
 USER_C_SOURCES += apps/modules/app/display.c
 endif
-ifneq ($(call ifdef_any_of,ENABLE_VOICE),)
+ifeq ($(call ifdef_any_of,DISABLE_VOICE),)
 USER_C_SOURCES += apps/modules/app/voice.c
 endif
-ifneq ($(call ifdef_any_of,ENABLE_POWER_MANAGER),)
+ifeq ($(call ifdef_any_of,DISABLE_POWER_MANAGER),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules.c
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_none.c
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_pseudo.c
@@ -168,7 +168,7 @@ USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_hlw8032.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_220.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_630.c
 USER_C_SOURCES += apps/modules/app/charger/channel_record.c
-ifneq ($(call ifdef_any_of,ENABLE_CARDREADER),)
+ifeq ($(call ifdef_any_of,DISABLE_CARDREADER),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_pseudo.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c

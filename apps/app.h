@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2022年08月11日 星期四 14时25分13秒
+ *   修改日期：2022年08月12日 星期五 09时18分59秒
  *   描    述：
  *
  *================================================================*/
@@ -21,9 +21,7 @@ extern "C"
 #include "cmsis_os.h"
 
 #include "callback_chain.h"
-#if defined(ENABLE_DISPLAY)
 #include "display_cache.h"
-#endif
 #include "storage.h"
 
 #define VER_MAJOR 0
@@ -56,7 +54,7 @@ typedef struct {
 typedef struct {
 	mechine_info_t mechine_info;
 	storage_info_t *storage_info;
-#if defined(ENABLE_DISPLAY)
+#if !defined(DISABLE_DISPLAY)
 	uint8_t mechine_info_invalid;
 	display_cache_app_t display_cache_app;
 	callback_item_t display_data_invalid_callback_item;
@@ -79,7 +77,7 @@ int app_load_config(void);
 int app_save_config(void);
 void app_init(void);
 void send_app_event(app_event_t event, uint32_t timeout);
-#if defined(ENABLE_DISPLAY)
+#if !defined(DISABLE_DISPLAY)
 void load_app_display_cache(app_info_t *app_info);
 void sync_app_display_cache(app_info_t *app_info);
 #endif
