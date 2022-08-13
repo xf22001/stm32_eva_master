@@ -474,11 +474,12 @@ static void fn13(request_t *request)
 	             &tm.tm_sec,
 	             &catched);
 	debug("ret:%d", ret);
-	tm.tm_year -= 1900;
-	tm.tm_mon -= 1;
-	ts = mktime(&tm);
 
 	if(ret == 7) {
+		tm.tm_year -= 1900;
+		tm.tm_mon -= 1;
+		ts = mktime(&tm);
+
 		if(set_time(ts) == 0) {
 			debug("set time successful!");
 		} else {

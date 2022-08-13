@@ -49,9 +49,7 @@ endif
 ifeq ($(call ifdef_any_of,DISABLE_VOICE),)
 USER_C_SOURCES += apps/channels_notify_voice.c
 endif
-ifeq ($(call ifdef_any_of,DISABLE_POWER_MANAGER),)
 USER_C_SOURCES += apps/power_manager_group_policy_config.c
-endif
 ifneq ($(call ifdef_any_of,ENABLE_CXX),)
 USER_CPP_SOURCES += apps/modules/tests/test_cpp.cpp
 endif

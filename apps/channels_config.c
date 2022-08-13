@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年06月29日 星期三 17时00分03秒
+ *   修改日期：2022年08月13日 星期六 11时01分30秒
  *   描    述：
  *
  *================================================================*/
@@ -48,6 +48,7 @@ char *get_channel_config_charger_bms_type_des(channel_charger_bms_type_t type)
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_NONE);
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_GB);
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_CCS);
+			add_des_case(CHANNEL_CHARGER_BMS_TYPE_JP);
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_AC);
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_NOBMS);
 			add_des_case(CHANNEL_CHARGER_BMS_TYPE_CUSTOM);
@@ -154,7 +155,7 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_NOBMS,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB,
 		.hcan_bms = &hcan2,
 	},
 	.energy_meter_config = {
@@ -186,9 +187,9 @@ static channel_config_t channel3_config = {
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
-	//&channel1_config,
-	//&channel2_config,
-	//&channel3_config,
+	&channel1_config,
+	&channel2_config,
+	&channel3_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {
@@ -224,7 +225,7 @@ static channels_config_t channels_config_0 = {
 		.items = card_reader_config_item_sz,
 	},
 	.display_config = {
-		//.huart = &huart6,
+		.huart = &huart6,
 	},
 	.proxy_channel_info = {
 		.hcan = &hcan1,

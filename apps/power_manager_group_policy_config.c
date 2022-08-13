@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2022年08月11日 星期四 09时15分34秒
+ *   修改日期：2022年07月22日 星期五 12时37分09秒
  *   描    述：
  *
  *================================================================*/
@@ -135,23 +135,41 @@ groups_power_module_group_bind_info_t groups_power_module_group_bind_info = {
 
 static channel_relay_fb_node_info_t channel_relay_fb_node_info_0 = {
 	.channel_id = 0,
-	//.gpio_port_fb = MAIN_RLY_PLUG1_BACK_GPIO_Port,
-	//.gpio_pin_fb = MAIN_RLY_PLUG1_BACK_Pin,
+	.gpio_port_fb = NULL,
+	.gpio_pin_fb = 0,
 	.hadc = NULL,
 	.rank = 0,
 };
 
 static channel_relay_fb_node_info_t channel_relay_fb_node_info_1 = {
 	.channel_id = 1,
-	//.gpio_port_fb = MAIN_RLY_PLUG2_BACK_GPIO_Port,
-	//.gpio_pin_fb = MAIN_RLY_PLUG2_BACK_Pin,
+	.gpio_port_fb = NULL,
+	.gpio_pin_fb = 0,
 	.hadc = NULL,
 	.rank = 1,
+};
+
+static channel_relay_fb_node_info_t channel_relay_fb_node_info_2 = {
+	.channel_id = 2,
+	.gpio_port_fb = NULL,
+	.gpio_pin_fb = 0,
+	.hadc = NULL,
+	.rank = 2,
+};
+
+static channel_relay_fb_node_info_t channel_relay_fb_node_info_3 = {
+	.channel_id = 3,
+	.gpio_port_fb = NULL,
+	.gpio_pin_fb = 0,
+	.hadc = NULL,
+	.rank = 3,
 };
 
 static channel_relay_fb_node_info_t *channel_relay_fb_node_info_sz[] = {
 	&channel_relay_fb_node_info_0,
 	&channel_relay_fb_node_info_1,
+	&channel_relay_fb_node_info_2,
+	&channel_relay_fb_node_info_3,
 };
 
 static power_manager_group_channel_relay_fb_info_t power_manager_group_channel_relay_fb_info_0 = {
@@ -205,13 +223,11 @@ void power_manager_restore_config(channels_info_t *channels_info)
 			power_manager_group_settings->slot_per_relay_board[j] = 6;
 		}
 
-		power_manager_group_settings->power_module_group_number = 2;
-
-		channels_info->channel_number += power_manager_group_settings->channel_number;
+		power_manager_group_settings->power_module_group_number = 4;
 
 		for(j = 0; j < power_manager_group_settings->power_module_group_number; j++) {
 			power_module_group_settings_t *power_module_group_settings = &power_manager_group_settings->power_module_group_settings[j];
-			power_module_group_settings->power_module_number = 3;
+			power_module_group_settings->power_module_number = 2;
 		}
 	}
 }
