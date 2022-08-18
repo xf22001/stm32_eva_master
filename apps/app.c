@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2022年08月12日 星期五 14时53分04秒
+ *   修改日期：2022年08月18日 星期四 15时32分17秒
  *   描    述：
  *
  *================================================================*/
@@ -259,9 +259,9 @@ void app(void const *argument)
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
 
-	while(is_log_server_valid() == 0) {
-		osDelay(1);
-	}
+	//while(is_log_server_valid() == 0) {
+	//	osDelay(1);
+	//}
 
 	//get_or_alloc_uart_debug_info(&huart1);
 	//add_log_handler((log_fn_t)log_uart_data);
