@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2022年08月22日 星期一 14时39分55秒
+ *   修改日期：2022年08月22日 星期一 15时23分15秒
  *   描    述：
  *
  *================================================================*/
@@ -232,3 +232,30 @@ void power_manager_restore_config(channels_info_t *channels_info)
 	}
 }
 
+void channel_info_reset_default_config(channel_info_t *channel_info)
+{
+	channel_config_t *channel_config = channel_info->channel_config;
+	channel_settings_t *channel_settings = &channel_info->channel_settings;
+
+	memset(channel_settings, 0, sizeof(channel_settings_t));
+
+	channel_settings->channel_type = channel_config->channel_type;
+	channel_settings->charger_settings.charger_type = channel_config->charger_config.charger_type;
+	channel_settings->energy_meter_settings.type = channel_config->energy_meter_config.default_type;
+	channel_settings->energy_meter_settings.request_addr = channel_config->energy_meter_config.request_addr;
+	channel_settings->energy_meter_settings.energy_accuracy = channel_config->energy_meter_config.energy_accuracy;
+	channel_settings->energy_meter_settings.voltage_accuracy = channel_config->energy_meter_config.voltage_accuracy;
+	channel_settings->energy_meter_settings.curent_accuracy = channel_config->energy_meter_config.curent_accuracy;
+	channel_settings->function_board_type = channel_config->function_board_config.default_type;
+
+	channel_settings->max_output_power = 6000000;
+
+	channel_settings->max_output_voltage = 10000;
+	channel_settings->min_output_voltage = 500;
+	channel_settings->max_output_current = 5000;
+	channel_settings->min_output_current = 3;
+
+	channel_settings->multi_charge_settings.enable = 1;
+	channel_settings->multi_charge_settings.group = 0;
+	channel_settings->multi_charge_settings.id = 0;
+}

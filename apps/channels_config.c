@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年08月22日 星期一 10时29分19秒
+ *   修改日期：2022年08月22日 星期一 14时59分19秒
  *   描    述：
  *
  *================================================================*/
@@ -66,13 +66,13 @@ static channel_config_t channel1_config = {
 	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
 };
 
-static channel_config_t channel2_config = {
-	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
-};
-
-static channel_config_t channel3_config = {
-	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
-};
+//static channel_config_t channel2_config = {
+//	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
+//};
+//
+//static channel_config_t channel3_config = {
+//	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
+//};
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
@@ -114,7 +114,7 @@ static channels_config_t channels_config_0 = {
 		.items = card_reader_config_item_sz,
 	},
 	.display_config = {
-		.huart = &huart6,
+		//.huart = &huart6,
 	},
 	.proxy_channel_info = {
 		.hcan = &hcan1,
