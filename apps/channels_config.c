@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年08月19日 星期五 16时52分58秒
+ *   修改日期：2022年08月22日 星期一 10时29分19秒
  *   描    述：
  *
  *================================================================*/
@@ -77,8 +77,8 @@ static channel_config_t channel3_config = {
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
 	&channel1_config,
-	&channel2_config,
-	&channel3_config,
+	//&channel2_config,
+	//&channel3_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {

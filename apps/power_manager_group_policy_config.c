@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2022年07月22日 星期五 12时37分09秒
+ *   修改日期：2022年08月22日 星期一 10时31分36秒
  *   描    述：
  *
  *================================================================*/
@@ -26,38 +26,38 @@ static relay_node_info_t relay_node_info_0_0 = {
 	.gpio_pin_fb = in_6_Pin,
 };
 
-static relay_node_info_t relay_node_info_0_1 = {
-	.relay_id = 1,
-	.bind_node_id = {1, 2},
-	.gpio_port = out_7_GPIO_Port,//02km13/02km14
-	.gpio_pin = out_7_Pin,
-	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
-	.gpio_pin_fb = in_6_Pin,
-};
-
-static relay_node_info_t relay_node_info_0_2 = {
-	.relay_id = 2,
-	.bind_node_id = {2, 3},
-	.gpio_port = out_6_GPIO_Port,//02km13/02km14
-	.gpio_pin = out_6_Pin,
-	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
-	.gpio_pin_fb = in_6_Pin,
-};
-
-static relay_node_info_t relay_node_info_0_3 = {
-	.relay_id = 3,
-	.bind_node_id = {3, 0},
-	.gpio_port = out_5_GPIO_Port,//02km15/02km16
-	.gpio_pin = out_5_Pin,
-	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
-	.gpio_pin_fb = in_6_Pin,
-};
+//static relay_node_info_t relay_node_info_0_1 = {
+//	.relay_id = 1,
+//	.bind_node_id = {1, 2},
+//	.gpio_port = out_7_GPIO_Port,//02km13/02km14
+//	.gpio_pin = out_7_Pin,
+//	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
+//	.gpio_pin_fb = in_6_Pin,
+//};
+//
+//static relay_node_info_t relay_node_info_0_2 = {
+//	.relay_id = 2,
+//	.bind_node_id = {2, 3},
+//	.gpio_port = out_6_GPIO_Port,//02km13/02km14
+//	.gpio_pin = out_6_Pin,
+//	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
+//	.gpio_pin_fb = in_6_Pin,
+//};
+//
+//static relay_node_info_t relay_node_info_0_3 = {
+//	.relay_id = 3,
+//	.bind_node_id = {3, 0},
+//	.gpio_port = out_5_GPIO_Port,//02km15/02km16
+//	.gpio_pin = out_5_Pin,
+//	.gpio_port_fb = in_6_GPIO_Port,//02km9/02km10/02km11/02km12/02km13/02km14/02km14/02km15/02km16/
+//	.gpio_pin_fb = in_6_Pin,
+//};
 
 static relay_node_info_t *relay_node_info_0_sz[] = {
 	&relay_node_info_0_0,
-	&relay_node_info_0_1,
-	&relay_node_info_0_2,
-	&relay_node_info_0_3,
+	//&relay_node_info_0_1,
+	//&relay_node_info_0_2,
+	//&relay_node_info_0_3,
 };
 
 static power_manager_group_relay_info_t power_manager_group_relay_info_0 = {
@@ -93,29 +93,29 @@ static power_module_group_bind_node_t power_module_group_bind_node_0_1 = {
 	.power_module_group_id_size = ARRAY_SIZE(power_module_group_id_0_1),
 };
 
-static uint8_t power_module_group_id_0_2[] = {4, 5};
-
-static power_module_group_bind_node_t power_module_group_bind_node_0_2 = {
-	.id = 2,
-	.channel_id = 2,
-	.power_module_group_id_sz = power_module_group_id_0_2,
-	.power_module_group_id_size = ARRAY_SIZE(power_module_group_id_0_2),
-};
-
-static uint8_t power_module_group_id_0_3[] = {6, 7};
-
-static power_module_group_bind_node_t power_module_group_bind_node_0_3 = {
-	.id = 3,
-	.channel_id = 3,
-	.power_module_group_id_sz = power_module_group_id_0_3,
-	.power_module_group_id_size = ARRAY_SIZE(power_module_group_id_0_3),
-};
+//static uint8_t power_module_group_id_0_2[] = {4, 5};
+//
+//static power_module_group_bind_node_t power_module_group_bind_node_0_2 = {
+//	.id = 2,
+//	.channel_id = 2,
+//	.power_module_group_id_sz = power_module_group_id_0_2,
+//	.power_module_group_id_size = ARRAY_SIZE(power_module_group_id_0_2),
+//};
+//
+//static uint8_t power_module_group_id_0_3[] = {6, 7};
+//
+//static power_module_group_bind_node_t power_module_group_bind_node_0_3 = {
+//	.id = 3,
+//	.channel_id = 3,
+//	.power_module_group_id_sz = power_module_group_id_0_3,
+//	.power_module_group_id_size = ARRAY_SIZE(power_module_group_id_0_3),
+//};
 
 static power_module_group_bind_node_t *power_module_group_bind_node_sz[] = {
 	&power_module_group_bind_node_0_0,
 	&power_module_group_bind_node_0_1,
-	&power_module_group_bind_node_0_2,
-	&power_module_group_bind_node_0_3,
+	//&power_module_group_bind_node_0_2,
+	//&power_module_group_bind_node_0_3,
 };
 
 static group_power_module_group_bind_info_t group_power_module_group_bind_info_0 = {
@@ -149,27 +149,27 @@ static channel_relay_fb_node_info_t channel_relay_fb_node_info_1 = {
 	.rank = 1,
 };
 
-static channel_relay_fb_node_info_t channel_relay_fb_node_info_2 = {
-	.channel_id = 2,
-	.gpio_port_fb = NULL,
-	.gpio_pin_fb = 0,
-	.hadc = NULL,
-	.rank = 2,
-};
-
-static channel_relay_fb_node_info_t channel_relay_fb_node_info_3 = {
-	.channel_id = 3,
-	.gpio_port_fb = NULL,
-	.gpio_pin_fb = 0,
-	.hadc = NULL,
-	.rank = 3,
-};
+//static channel_relay_fb_node_info_t channel_relay_fb_node_info_2 = {
+//	.channel_id = 2,
+//	.gpio_port_fb = NULL,
+//	.gpio_pin_fb = 0,
+//	.hadc = NULL,
+//	.rank = 2,
+//};
+//
+//static channel_relay_fb_node_info_t channel_relay_fb_node_info_3 = {
+//	.channel_id = 3,
+//	.gpio_port_fb = NULL,
+//	.gpio_pin_fb = 0,
+//	.hadc = NULL,
+//	.rank = 3,
+//};
 
 static channel_relay_fb_node_info_t *channel_relay_fb_node_info_sz[] = {
 	&channel_relay_fb_node_info_0,
 	&channel_relay_fb_node_info_1,
-	&channel_relay_fb_node_info_2,
-	&channel_relay_fb_node_info_3,
+	//&channel_relay_fb_node_info_2,
+	//&channel_relay_fb_node_info_3,
 };
 
 static power_manager_group_channel_relay_fb_info_t power_manager_group_channel_relay_fb_info_0 = {
