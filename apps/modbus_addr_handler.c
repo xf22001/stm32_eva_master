@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年08月08日 星期一 10时34分44秒
+ *   修改日期：2022年08月26日 星期五 08时36分04秒
  *   描    述：
  *
  *================================================================*/
@@ -398,12 +398,12 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 				switch(type) {
 					case CHANNEL_EVENT_TYPE_START_CHANNEL: {
 						channel_info->channel_event_start_display.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
-						channel_info->channel_event_start_display.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
+						channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(MANUAL);
 					}
 					break;
 
 					case CHANNEL_EVENT_TYPE_STOP_CHANNEL: {
-						channel_info->channel_event_stop.stop_reason = CHANNEL_RECORD_ITEM_STOP_REASON_MANUAL;
+						channel_info->channel_event_stop.stop_reason = channel_record_item_stop_reason(MANUAL);
 					}
 					break;
 
