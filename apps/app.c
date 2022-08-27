@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2022年08月18日 星期四 15时32分17秒
+ *   修改日期：2022年08月27日 星期六 14时46分08秒
  *   描    述：
  *
  *================================================================*/
@@ -278,7 +278,7 @@ void app(void const *argument)
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
 
-	//net_client_add_poll_loop(poll_loop);
+	net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
 	ntp_client_add_poll_loop(poll_loop);
 
