@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年08月22日 星期一 14时59分19秒
+ *   修改日期：2022年08月29日 星期一 11时15分22秒
  *   描    述：
  *
  *================================================================*/
@@ -17,6 +17,7 @@
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
+extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
@@ -49,6 +50,7 @@ static channel_config_t channel0_config = {
 	},
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_DC,
+		.request_addr = 1,
 		.energy_accuracy = VALUE_ACCURACY_2,
 		.voltage_accuracy = VALUE_ACCURACY_1,
 		.curent_accuracy = VALUE_ACCURACY_3,
@@ -62,8 +64,26 @@ static channel_config_t channel0_config = {
 	},
 };
 
+static energy_meter_config_item_t energy_meter_config_item_1_0 = {
+	.type = ENERGY_METER_TYPE_DC,
+	.huart = &huart3,
+};
+
+static energy_meter_config_item_t *energy_meter_config_item_1_sz[] = {
+	&energy_meter_config_item_1_0,
+};
+
 static channel_config_t channel1_config = {
 	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
+	.energy_meter_config = {
+		.default_type = ENERGY_METER_TYPE_DC,
+		.request_addr = 1,
+		.energy_accuracy = VALUE_ACCURACY_2,
+		.voltage_accuracy = VALUE_ACCURACY_1,
+		.curent_accuracy = VALUE_ACCURACY_3,
+		.size = ARRAY_SIZE(energy_meter_config_item_0_sz),
+		.items = energy_meter_config_item_0_sz,
+	},
 };
 
 //static channel_config_t channel2_config = {
@@ -114,7 +134,8 @@ static channels_config_t channels_config_0 = {
 		.items = card_reader_config_item_sz,
 	},
 	.display_config = {
-		//.huart = &huart6,
+		.huart = &huart1,
+		.station = 2,
 	},
 	.proxy_channel_info = {
 		.hcan = &hcan1,

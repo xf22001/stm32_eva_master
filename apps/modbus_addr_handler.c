@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年08月26日 星期五 08时36分04秒
+ *   修改日期：2022年08月29日 星期一 11时01分51秒
  *   描    述：
  *
  *================================================================*/
@@ -136,6 +136,7 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 
 	if(enum_info->id >= channels_info->power_module_number) {
 		modbus_data_value_r(modbus_data_ctx, 0xffff);
+		return;
 	}
 
 	switch(enum_info->field) {
@@ -311,6 +312,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 
 	if(enum_info->id >= channels_info->channel_number) {
 		modbus_data_value_r(modbus_data_ctx, 0xffff);
+		return;
 	}
 
 	switch(enum_info->field) {
@@ -558,6 +560,7 @@ static void modbus_data_action_channel_record_status(channels_info_t *channels_i
 
 	if(row >= RECORD_ITEM_CACHE_NUMBER) {
 		modbus_data_value_r(modbus_data_ctx, 0xffff);
+		return;
 	}
 
 	switch(enum_info->field) {

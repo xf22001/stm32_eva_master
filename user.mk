@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2022年08月26日 星期五 15时38分51秒
+#   修改日期：2022年08月29日 星期一 10时35分11秒
 #   描    述：
 #
 #================================================================
@@ -24,7 +24,9 @@ USER_C_INCLUDES += -Iapps/modules/app
 USER_C_INCLUDES += -Iapps/modules/app/charger
 USER_C_INCLUDES += -Iapps/modules/app/power_modules
 USER_C_INCLUDES += -Iapps/modules/app/power_manager
+ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
 USER_C_INCLUDES += -Iapps/modules/app/ftpd
+endif
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/app/net_client
 USER_C_INCLUDES += -Iapps/modules/tests
@@ -59,7 +61,9 @@ USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/request.c
 USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
+ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/file_log.c
+endif
 USER_C_SOURCES += apps/modules/app/net_client/net_client.c
 ifneq ($(call ifdef_any_of,NET_CLIENT_PROTOCOL_UDP),)
 USER_C_SOURCES += apps/modules/app/net_client/net_protocol_udp.c
@@ -85,22 +89,28 @@ endif
 USER_C_SOURCES += apps/modules/app/ftp_client.c
 USER_C_SOURCES += apps/modules/app/ntp_client.c
 USER_C_SOURCES += apps/modules/app/net_callback.c
+ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/ftpd/ftpd.c
 #USER_C_SOURCES += apps/modules/app/vfs_disk/pseudo_disk_io.c
 #USER_C_INCLUDES += -Iapps/modules/app/ftpd/vfs_ramdisk
 #C_SOURCES := $(filter-out Middlewares/Third_Party/FatFs/src/diskio.c ,$(C_SOURCES))
 USER_C_SOURCES += apps/modules/app/vfs_disk/vfs.c
 USER_C_SOURCES += apps/modules/app/mt_file.c
+endif
 USER_C_SOURCES += apps/modules/app/can_data_task.c
 USER_C_SOURCES += apps/modules/app/uart_data_task.c
 USER_C_SOURCES += apps/modules/app/duty_cycle_pattern.c
+ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/usbh_user_callback.c
+endif
 USER_C_SOURCES += apps/modules/app/early_sys_callback.c
 USER_C_SOURCES += apps/modules/app/connect_state.c
 USER_C_SOURCES += apps/modules/app/ntc_temperature.c
 USER_C_SOURCES += apps/modules/app/pt_temperature.c
 USER_C_SOURCES += apps/modules/app/can_command.c
+ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/usb_upgrade.c
+endif
 USER_C_SOURCES += apps/modules/app/firmware_upgrade_internal_flash.c
 ifeq ($(call ifdef_any_of,DISABLE_DISPLAY),)
 USER_C_SOURCES += apps/modules/app/display.c

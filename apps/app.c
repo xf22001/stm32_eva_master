@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2022年08月27日 星期六 14时46分08秒
+ *   修改日期：2022年08月29日 星期一 10时26分27秒
  *   描    述：
  *
  *================================================================*/
@@ -21,16 +21,12 @@
 
 #include "test_serial.h"
 #include "test_event.h"
-#include "file_log.h"
 #include "uart_debug.h"
 #include "probe_tool.h"
 #include "net_client.h"
 #include "ftp_client.h"
 #include "ntp_client.h"
 #include "ftpd/ftpd.h"
-#include "usb_upgrade.h"
-#include "usbh_user_callback.h"
-#include "vfs.h"
 
 #include "channels_config.h"
 #include "channels.h"
@@ -84,7 +80,6 @@ void app_init(void)
 {
 	app_event_init(10);
 	mem_info_init();
-	mt_file_init();
 }
 
 void send_app_event(app_event_t event, uint32_t timeout)
@@ -259,15 +254,14 @@ void app(void const *argument)
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
 
-	//while(is_log_server_valid() == 0) {
-	//	osDelay(1);
-	//}
+	while(is_log_server_valid() == 0) {
+		osDelay(1);
+	}
 
 	//get_or_alloc_uart_debug_info(&huart1);
 	//add_log_handler((log_fn_t)log_uart_data);
 
 	add_log_handler((log_fn_t)log_udp_data);
-	//add_log_handler((log_fn_t)log_file_data);
 
 	debug("===========================================start app============================================");
 
@@ -278,7 +272,7 @@ void app(void const *argument)
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
 
-	net_client_add_poll_loop(poll_loop);
+	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
 	ntp_client_add_poll_loop(poll_loop);
 
@@ -309,34 +303,12 @@ void app(void const *argument)
 
 		if(ret == 0) {
 			switch(event) {
-				case APP_EVENT_HOST_USER_CLASS_ACTIVE: {
-					if(mt_f_mount(get_vfs_fs(), "", 0) == FR_OK) {
-						start_usb_upgrade();
-					}
-				}
-				break;
-
-				case APP_EVENT_HOST_USER_CONNECTION: {
-				}
-				break;
-
-				case APP_EVENT_HOST_USER_DISCONNECTION: {
-					try_to_close_log();
-
-					if(mt_f_mount(0, "", 0) != FR_OK) {
-					}
-				}
-				break;
-
 				default: {
 					debug("unhandled event %x", event);
 				}
 				break;
 			}
 		}
-
-		handle_open_log();
-		handle_usb_upgrade();
 	}
 }
 

@@ -23,13 +23,11 @@
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
-#include "fatfs.h"
 #include "mbedtls.h"
 #include "rng.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
-#include "usb_host.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -109,7 +107,6 @@ int main(void)
   MX_CAN2_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
-  MX_FATFS_Init();
   MX_TIM4_Init();
   MX_SPI3_Init();
   MX_USART2_UART_Init();
@@ -182,7 +179,7 @@ void SystemClock_Config(void)
 
 /* USER CODE END 4 */
 
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM1 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
@@ -235,4 +232,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
