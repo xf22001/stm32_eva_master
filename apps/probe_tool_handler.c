@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年08月26日 星期五 08时50分16秒
+ *   修改日期：2022年08月30日 星期二 14时26分37秒
  *   描    述：
  *
  *================================================================*/
@@ -25,7 +25,7 @@
 #include "channels.h"
 #include "channel.h"
 #include "card_reader.h"
-#if defined(ENABLE_POWER_MANAGER)
+#if !defined(DISABLE_POWER_MANAGER)
 #include "power_manager.h"
 #endif
 #include "config_layout.h"
@@ -661,7 +661,7 @@ static void fn17(request_t *request)
 
 static void fn18(request_t *request)
 {
-#if defined(ENABLE_POWER_MANAGER)
+#if !defined(DISABLE_POWER_MANAGER)
 	start_dump_channels_stats();
 #endif
 }

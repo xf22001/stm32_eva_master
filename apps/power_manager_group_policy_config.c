@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2022年08月29日 星期一 11时19分05秒
+ *   修改日期：2022年08月30日 星期二 08时49分27秒
  *   描    述：
  *
  *================================================================*/
@@ -175,6 +175,7 @@ void channel_info_reset_default_config(channel_info_t *channel_info)
 	channel_settings->charger_settings.charger_type = channel_config->charger_config.charger_type;
 	channel_settings->energy_meter_settings.type = channel_config->energy_meter_config.default_type;
 	channel_settings->energy_meter_settings.request_addr = channel_config->energy_meter_config.request_addr;
+	channel_settings->energy_meter_settings.slot = channel_config->energy_meter_config.slot;
 	channel_settings->energy_meter_settings.energy_accuracy = channel_config->energy_meter_config.energy_accuracy;
 	channel_settings->energy_meter_settings.voltage_accuracy = channel_config->energy_meter_config.voltage_accuracy;
 	channel_settings->energy_meter_settings.curent_accuracy = channel_config->energy_meter_config.curent_accuracy;

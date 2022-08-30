@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年08月29日 星期一 11时15分22秒
+ *   修改日期：2022年08月30日 星期二 15时50分56秒
  *   描    述：
  *
  *================================================================*/
@@ -14,6 +14,7 @@
 #include "os_utils.h"
 #include "power_modules.h"
 #include "ntc_temperature.h"
+#include "main.h"
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
@@ -47,10 +48,21 @@ static channel_config_t channel0_config = {
 	.charger_config = {
 		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB,
 		.hcan_bms = &hcan2,
+		.output_relay_gpio = run_a_GPIO_Port,
+		.output_relay_pin = run_a_Pin,
+		.charger_lock_state_gpio = in_1_GPIO_Port,
+		.charger_lock_state_pin = in_1_Pin,
+		.relay_charger_lock_gpio = lock_a_GPIO_Port,
+		.relay_charger_lock_pin = lock_a_Pin,
+		.charger_auxiliary_power_choose_gpio = ch_a_GPIO_Port,
+		.charger_auxiliary_power_choose_pin = ch_a_Pin,
+		.charger_auxiliary_power_onoff_gpio = pw_a_GPIO_Port,
+		.charger_auxiliary_power_onoff_pin = pw_a_Pin,
 	},
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_DC,
 		.request_addr = 1,
+		.slot = 0,
 		.energy_accuracy = VALUE_ACCURACY_2,
 		.voltage_accuracy = VALUE_ACCURACY_1,
 		.curent_accuracy = VALUE_ACCURACY_3,
@@ -62,6 +74,9 @@ static channel_config_t channel0_config = {
 		.size = ARRAY_SIZE(function_board_config_item_0_sz),
 		.items = function_board_config_item_0_sz,
 	},
+	.cp_gpio = in_a_cc1_GPIO_Port,
+	.cp_pin = in_a_cc1_Pin,
+	.cp_connect_state = GPIO_PIN_SET,
 };
 
 static energy_meter_config_item_t energy_meter_config_item_1_0 = {
@@ -78,11 +93,12 @@ static channel_config_t channel1_config = {
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_DC,
 		.request_addr = 1,
+		.slot = 1,
 		.energy_accuracy = VALUE_ACCURACY_2,
 		.voltage_accuracy = VALUE_ACCURACY_1,
 		.curent_accuracy = VALUE_ACCURACY_3,
-		.size = ARRAY_SIZE(energy_meter_config_item_0_sz),
-		.items = energy_meter_config_item_0_sz,
+		.size = ARRAY_SIZE(energy_meter_config_item_1_sz),
+		.items = energy_meter_config_item_1_sz,
 	},
 };
 
@@ -129,7 +145,7 @@ static channels_config_t channels_config_0 = {
 	.voice_config = {
 	},
 	.card_reader_config = {
-		.default_type = CARD_READER_TYPE_PSEUDO,
+		.default_type = CARD_READER_TYPE_ZLG,
 		.size = ARRAY_SIZE(card_reader_config_item_sz),
 		.items = card_reader_config_item_sz,
 	},

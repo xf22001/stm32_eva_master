@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年08月29日 星期一 11时01分51秒
+ *   修改日期：2022年08月30日 星期二 15时01分50秒
  *   描    述：
  *
  *================================================================*/
@@ -19,6 +19,7 @@
 #include "app.h"
 #include "power_manager.h"
 
+//#define LOG_DISABLE
 #include "log.h"
 
 #define add_modbus_data_get_set_buffer_case(name) \
