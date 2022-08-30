@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年08月30日 星期二 15时50分56秒
+ *   修改日期：2022年08月30日 星期二 17时07分30秒
  *   描    述：
  *
  *================================================================*/
@@ -77,6 +77,11 @@ static channel_config_t channel0_config = {
 	.cp_gpio = in_a_cc1_GPIO_Port,
 	.cp_pin = in_a_cc1_Pin,
 	.cp_connect_state = GPIO_PIN_SET,
+
+	.fault_port = fault_GPIO_Port,
+	.fault_pin = fault_Pin,
+	.led_full_port = full_a_GPIO_Port,
+	.led_full_pin = full_a_Pin,
 };
 
 static energy_meter_config_item_t energy_meter_config_item_1_0 = {
@@ -100,21 +105,15 @@ static channel_config_t channel1_config = {
 		.size = ARRAY_SIZE(energy_meter_config_item_1_sz),
 		.items = energy_meter_config_item_1_sz,
 	},
+	.fault_port = fault_GPIO_Port,
+	.fault_pin = fault_Pin,
+	.led_full_port = full_a_GPIO_Port,
+	.led_full_pin = full_a_Pin,
 };
-
-//static channel_config_t channel2_config = {
-//	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
-//};
-//
-//static channel_config_t channel3_config = {
-//	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
-//};
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
 	&channel1_config,
-	//&channel2_config,
-	//&channel3_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {
@@ -161,6 +160,12 @@ static channels_config_t channels_config_0 = {
 	},
 	.board_temperature_adc = &hadc1,
 	.board_temperature_adc_rank = 0,
+	.force_stop_port = in_4_GPIO_Port,
+	.force_stop_pin = in_4_Pin,
+	.force_stop_normal_state = GPIO_PIN_RESET,
+	.door_port = in_2_GPIO_Port,
+	.door_pin = in_2_Pin,
+	.door_normal_state = GPIO_PIN_SET,
 };
 
 static channels_config_t *channels_config_sz[] = {
