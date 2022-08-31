@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年08月30日 星期二 15时01分50秒
+ *   修改日期：2022年08月31日 星期三 16时31分58秒
  *   描    述：
  *
  *================================================================*/
@@ -367,7 +367,14 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		break;
 
 		case add_channel_status_field_type_case(CHANNEL_FAULT): {
-			modbus_data_value_r(modbus_data_ctx, get_first_fault(channel_info->faults));
+			int fault;
+			fault = get_first_fault(channels_info->faults);
+
+			if(fault == -1) {
+				fault = get_first_fault(channel_info->faults);
+			}
+
+			modbus_data_value_r(modbus_data_ctx, fault);
 		}
 		break;
 
@@ -393,7 +400,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 				channel_event_t *channel_event = os_calloc(1, sizeof(channel_event_t));
 				channels_event_t *channels_event = os_calloc(1, sizeof(channels_event_t));
 				uint8_t channel_id = channel_info->channel_id;
-				uint8_t type = CHANNEL_EVENT_TYPE_START_CHANNEL;
+				uint8_t type = (modbus_data_ctx->value != 0) ? CHANNEL_EVENT_TYPE_START_CHANNEL : CHANNEL_EVENT_TYPE_STOP_CHANNEL;
 
 				OS_ASSERT(channel_event != NULL);
 				OS_ASSERT(channels_event != NULL);
