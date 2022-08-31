@@ -6,7 +6,7 @@
  *   文件名称：channels_custom.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月31日 星期三 08时53分08秒
- *   修改日期：2022年08月31日 星期三 09时37分57秒
+ *   修改日期：2022年08月31日 星期三 15时28分47秒
  *   描    述：
  *
  *================================================================*/
@@ -74,8 +74,46 @@ static void handle_channels_fault_led(channels_info_t *channels_info)
 	HAL_GPIO_WritePin(out_2_GPIO_Port, out_2_Pin, state);
 }
 
+static void handle_channels_adhesion(channels_info_t *channels_info)
+{
+	static uint32_t adhesion_alive_stamp = 0;
+	int i;
+	uint8_t idle = 1;
+	GPIO_PinState state;
+	uint32_t ticks = osKernelSysTick();
+	uint8_t adhesion_fault = 0;
+
+	for(i = 0; i < channels_info->channel_number; i++) {
+		channel_info_t *channel_info = channels_info->channel_info + i;
+
+		if(channel_info->state != CHANNEL_STATE_IDLE) {
+			idle = 0;
+			break;
+		}
+	}
+
+	if(idle == 1) {
+		state = HAL_GPIO_ReadPin(in_5_GPIO_Port, in_5_Pin);
+
+		if(state == GPIO_PIN_RESET) {
+			adhesion_alive_stamp = ticks;
+		}
+	} else {
+		adhesion_alive_stamp = ticks;
+	}
+
+	if(ticks_duration(ticks, adhesion_alive_stamp) >= 5000) {
+		adhesion_fault = 1;
+	}
+
+	if(get_fault(channels_info->faults, CHANNELS_FAULT_RELAY_ADHESION) != adhesion_fault) {
+		set_fault(channels_info->faults, CHANNELS_FAULT_RELAY_ADHESION, adhesion_fault);
+	}
+}
+
 void handle_channels_common_periodic_custom(channels_info_t *channels_info)
 {
 	handle_channels_idle_led(channels_info);
 	handle_channels_fault_led(channels_info);
+	handle_channels_adhesion(channels_info);
 }
