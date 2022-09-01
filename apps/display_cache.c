@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2022年08月26日 星期五 08时36分23秒
+ *   修改日期：2022年09月01日 星期四 14时23分55秒
  *   描    述：
  *
  *================================================================*/
@@ -360,8 +360,8 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 
 		if(channels_info->display_cache_channels.record_load_cmd == 1) {
 			struct tm tm = {0};
-			uint8_t year_h = get_u8_l_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
-			uint8_t year_l = get_u8_h_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
+			uint8_t year_l = get_u8_l_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
+			uint8_t year_h = get_u8_h_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
 
 			channels_info->display_cache_channels.record_load_cmd = 0;	
 
@@ -371,8 +371,6 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 			channel_record_task_info->page_load_time = mktime(&tm);
 
 			channel_record_item_page_load_location(channel_record_task_info);
-		} else {
-			channel_record_item_page_load_current(channel_record_task_info);
 		}
 	}
 

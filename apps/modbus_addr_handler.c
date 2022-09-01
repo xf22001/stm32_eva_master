@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年08月31日 星期三 17时00分14秒
+ *   修改日期：2022年09月01日 星期四 11时15分09秒
  *   描    述：
  *
  *================================================================*/
@@ -887,27 +887,25 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_YEAR): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.year);
-			channels_info->display_cache_channels.record_load_cmd = 1;
 			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_MONTH): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.mon);
-			channels_info->display_cache_channels.record_load_cmd = 1;
 			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_DAY): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.day);
-			channels_info->display_cache_channels.record_load_cmd = 1;
 			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_REFRESH): {
 			modbus_data_value_r(modbus_data_ctx, 0);
+			channels_info->display_cache_channels.record_load_cmd = 1;
 			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
