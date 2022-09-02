@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年09月02日 星期五 15时14分21秒
+ *   修改日期：2022年09月02日 星期五 16时09分19秒
  *   描    述：
  *
  *================================================================*/
@@ -539,12 +539,12 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		break;
 
 		case add_channel_status_field_type_case(TEMPERATURE_P): {
-			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_p);
+			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_p + 20);
 		}
 		break;
 
 		case add_channel_status_field_type_case(TEMPERATURE_N): {
-			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_n);
+			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_n + 20);
 		}
 		break;
 
