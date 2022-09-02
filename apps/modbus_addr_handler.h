@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2022年08月08日 星期一 10时37分57秒
+ *   修改日期：2022年09月02日 星期五 12时58分52秒
  *   描    述：
  *
  *================================================================*/
@@ -80,7 +80,24 @@ extern "C"
 	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##START_STOP), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##REMAIN_MIN), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##SOC), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##AMOUNT)
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##AMOUNT), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##PRICE, (base + 38)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##CHARGER_CONNECT_STATE, (base + 40)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##INSULATION_RESISTOR, (base + 47)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TEMPERATURE_P), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TEMPERATURE_N), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##CHARGER_LOCK_STATE, (base + 52)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##INSULATION_STATE, (base + 59)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##BATTERY_TYPE, (base + 61)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TOTAL_BATTERY_RATE_CAPICITY), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY, (base + 64)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_SINGLE_BATTERY_MAX_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCP_MAX_TEMPERATURE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BSM_BATTERY_MAX_TEMPERATURE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_CHARGE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_CHARGE_CURRENT), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BHM_MAX_CHARGE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BRM_TOTAL_BATTERY_RATE_VOLTAGE)
 
 #define add_enum_modbus_channel_record_status(row, base) \
 	add_enum_modbus_item_with_base(CHANNEL_RECORD_##row##_##PAD, base), \
