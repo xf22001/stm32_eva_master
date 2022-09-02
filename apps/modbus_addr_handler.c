@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年09月02日 星期五 15时04分48秒
+ *   修改日期：2022年09月02日 星期五 15时14分21秒
  *   描    述：
  *
  *================================================================*/
@@ -633,7 +633,6 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				uint16_t charge_current = 4000 - charger_info->bms_data.bcs_data.charge_current;
-				debug("channel %d charge_current:%d", channel_info->channel_id, charge_current);
 				modbus_data_value_r(modbus_data_ctx, charge_current);
 			} else {
 				modbus_data_value_r(modbus_data_ctx, 0);
