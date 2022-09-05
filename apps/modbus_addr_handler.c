@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年09月02日 星期五 16时09分19秒
+ *   修改日期：2022年09月05日 星期一 11时06分47秒
  *   描    述：
  *
  *================================================================*/
@@ -554,8 +554,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		break;
 
 		case add_channel_status_field_type_case(INSULATION_STATE): {
-			//todo ...
-			modbus_data_value_r(modbus_data_ctx, channel_info->insulation_resistor);
+			modbus_data_value_r(modbus_data_ctx, channel_info->insulation_state);
 		}
 		break;
 
