@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2022年08月31日 星期三 09时01分36秒
+#   修改日期：2022年09月09日 星期五 17时08分38秒
 #   描    述：
 #
 #================================================================
@@ -133,6 +133,10 @@ USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager.c
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager_handler_native.c
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager_group_policy_chain.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MANAGER_CHANNEL_PROXY_LOCAL),)
+USER_C_SOURCES += apps/modules/app/power_manager/power_manager_channel_comm_proxy.c
+USER_C_SOURCES += apps/modules/app/power_manager/power_manager_channel_comm_proxy_local.c
 endif
 USER_C_SOURCES += apps/modules/app/charger/channels_config_helper.c
 USER_C_SOURCES += apps/modules/app/charger/channels.c
