@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2022年09月02日 星期五 12时58分52秒
+ *   修改日期：2022年12月13日 星期二 15时50分16秒
  *   描    述：
  *
  *================================================================*/
@@ -42,19 +42,6 @@ extern "C"
 	MODBUS_ADDR_##name##_START = (base), \
 	MODBUS_ADDR_##name##_END = (MODBUS_ADDR_##name##_START + (length) - 1)
 
-#define add_enum_channel_settings(channel_id, base) \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_SETTINGS_##CHANNEL_TYPE, base), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_SETTINGS_##CHARGER_TYPE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_SETTINGS_##ENERGY_METER_TYPE), \
-	add_enum_modbus_buffer(CHANNEL_##channel_id##_SETTINGS_##ENERGY_METER_REQUEST_ADDR, 3), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_SETTINGS_##FUNCTION_BOARD_TYPE, base + 50), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_SETTINGS_##AC_CURRENT_LIMIT), \
-	add_enum_modbus_word_item(CHANNEL_##channel_id##_SETTINGS_##MAX_OUTPUT_POWER), \
-	add_enum_modbus_word_item(CHANNEL_##channel_id##_SETTINGS_##MAX_OUTPUT_VOLTAGE), \
-	add_enum_modbus_word_item(CHANNEL_##channel_id##_SETTINGS_##MIN_OUTPUT_VOLTAGE), \
-	add_enum_modbus_word_item(CHANNEL_##channel_id##_SETTINGS_##MAX_OUTPUT_CURRENT), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_SETTINGS_##MIN_OUTPUT_CURRENT)
-
 #define add_enum_modbus_power_module_status(power_module_id) \
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##PDU_GROUP_ID), \
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##CHANNEL_ID), \
@@ -67,37 +54,40 @@ extern "C"
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##MODULE_STATE), \
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##CONNECT_STATE)
 
-#define add_enum_modbus_channel_status(channel_id, base) \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##STATE, base), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##CURRENT), \
-	add_enum_modbus_word_item(CHANNEL_##channel_id##_STATUS_##CHARGE_ENERGY), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##CHARGE_DURATION), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##REQUIRE_VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##REQUIRE_CURRENT), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##CHANNEL_FAULT), \
-	add_enum_modbus_word_item_with_base(CHANNEL_##channel_id##_STATUS_##ACCOUNT_BALANCE, (base + 14)), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##START_STOP), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##REMAIN_MIN), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##SOC), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##AMOUNT), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##PRICE, (base + 38)), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##CHARGER_CONNECT_STATE, (base + 40)), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##INSULATION_RESISTOR, (base + 47)), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TEMPERATURE_P), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TEMPERATURE_N), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##CHARGER_LOCK_STATE, (base + 52)), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##INSULATION_STATE, (base + 59)), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##BATTERY_TYPE, (base + 61)), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##TOTAL_BATTERY_RATE_CAPICITY), \
-	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_STATUS_##BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY, (base + 64)), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_SINGLE_BATTERY_MAX_VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCP_MAX_TEMPERATURE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BSM_BATTERY_MAX_TEMPERATURE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_CHARGE_VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BCS_CHARGE_CURRENT), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BHM_MAX_CHARGE_VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_STATUS_##BRM_TOTAL_BATTERY_RATE_VOLTAGE)
+#define add_enum_modbus_channel_items(channel_id, base) \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##STATE, base), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CURRENT), \
+	add_enum_modbus_word_item(CHANNEL_##channel_id##_ITEM_##CHARGE_ENERGY), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_DURATION), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##REQUIRE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##REQUIRE_CURRENT), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHANNEL_FAULT), \
+	add_enum_modbus_word_item_with_base(CHANNEL_##channel_id##_ITEM_##ACCOUNT_BALANCE, (base + 14)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##START_STOP), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##REMAIN_MIN), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##SOC), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##AMOUNT), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##PRICE, (base + 38)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##CHARGER_CONNECT_STATE, (base + 40)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##INSULATION_RESISTOR, (base + 47)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##TEMPERATURE_P), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##TEMPERATURE_N), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##CHARGER_LOCK_STATE, (base + 52)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##INSULATION_STATE, (base + 59)), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##BATTERY_TYPE, (base + 61)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##TOTAL_BATTERY_RATE_CAPICITY), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY, (base + 64)), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BCS_SINGLE_BATTERY_MAX_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BCP_MAX_TEMPERATURE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BSM_BATTERY_MAX_TEMPERATURE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BCS_CHARGE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BCS_CHARGE_CURRENT), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BHM_MAX_CHARGE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BRM_TOTAL_BATTERY_RATE_VOLTAGE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_MODE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_CONDITION), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##ACCOUNT_TYPE)
 
 #define add_enum_modbus_channel_record_status(row, base) \
 	add_enum_modbus_item_with_base(CHANNEL_RECORD_##row##_##PAD, base), \
@@ -127,10 +117,11 @@ typedef enum {
 	//桩设置
 	add_enum_modbus_item_with_base(AUTHORIZE, 1000),
 	add_enum_modbus_item(AUTO_START),
-	add_enum_modbus_item(VIN_VERIFY_ENABLE),
-	add_enum_modbus_item(PRECHARGE_ENABLE),
+	add_enum_modbus_item(OFFLINE_AUTHORIZE),
+	add_enum_modbus_item(PRECHARGE_DISABLE),
 	add_enum_modbus_item(POWER_MODULE_TYPE),
 	add_enum_modbus_item(HUAWEI_REFERENCE_CURRENT),
+	add_enum_modbus_item(REQUEST_POPUP_CLOSE),
 
 	add_enum_modbus_item_with_base(CARD_READER_TYPE, 1350),
 	add_enum_modbus_item_with_base(MODULE_MAX_OUTPUT_VOLTAGE, 1400),
@@ -148,9 +139,6 @@ typedef enum {
 	add_enum_modbus_item(MAGNIFICATION),
 	add_enum_modbus_word_item(WITHHOLDING),
 	add_enum_modbus_item(PE_DETECT_DISABLE),
-
-	//add_enum_channel_settings(1, 10000),
-
 
 	//桩状态
 	MODBUS_ADDR_POWER_MODULE_STATUS_START = 20000,
@@ -179,9 +167,12 @@ typedef enum {
 	add_enum_modbus_power_module_status(22),
 	add_enum_modbus_power_module_status(23),
 
-	//通道状态
-	add_enum_modbus_channel_status(0, 30000),
-	add_enum_modbus_channel_status(1, 31000),
+	add_enum_modbus_item_with_base(POPUP_TYPE, 20301),
+	add_enum_modbus_item(POPUP_VALUE),
+
+	//通道地址
+	add_enum_modbus_channel_items(0, 30000),
+	add_enum_modbus_channel_items(1, 31000),
 
 	//充电记录
 	add_enum_modbus_item_with_base(CHANNEL_RECORD_NUMBER, 40000),
@@ -202,6 +193,11 @@ typedef enum {
 	add_enum_modbus_channel_record_status(9, 41000),
 	
 } modbus_slave_addr_t;
+
+typedef enum {
+	MODBUS_POPUP_TYPE_NONE = 0,
+	MODBUS_POPUP_TYPE_AUTH = 61,
+} modbus_popup_type_t;
 
 char *get_modbus_slave_addr_des(modbus_slave_addr_t addr);
 void channels_modbus_data_action(void *fn_ctx, void *chain_ctx);

@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年08月30日 星期二 14时26分37秒
+ *   修改日期：2022年11月05日 星期六 10时47分03秒
  *   描    述：
  *
  *================================================================*/
@@ -70,14 +70,14 @@ static void fn3(request_t *request)
 	}
 
 	if(stage == 0) {
-		flash_erase_sector(IAP_CONST_FW_ADDRESS_START_SECTOR, IAP_CONST_FW_ADDRESS_SECTOR_NUMBER);
+		flash_erase_sector(IAP_CONST_APP_ADDRESS, IAP_CONST_APP_ADDRESS_SECTOR_NUMBER);
 	} else if(stage == 1) {
 		if(data_size == 4) {
 			uint32_t *p = (uint32_t *)data;
 			file_crc32 = *p;
 		}
 	} else if(stage == 2) {
-		flash_write(IAP_CONST_FW_ADDRESS + data_offset, data, data_size);
+		flash_write(IAP_CONST_APP_ADDRESS + data_offset, data, data_size);
 
 		if(data_offset + data_size == total_size) {
 			uint32_t read_offset = 0;
@@ -87,7 +87,7 @@ static void fn3(request_t *request)
 				uint32_t i;
 				uint32_t left = total_size - read_offset;
 				uint32_t read_size = (left > 32) ? 32 : left;
-				uint8_t *read_buffer = (uint8_t *)(IAP_CONST_FW_ADDRESS + read_offset);
+				uint8_t *read_buffer = (uint8_t *)(IAP_CONST_APP_ADDRESS + read_offset);
 
 				for(i = 0; i < read_size; i++) {
 					crc32 += read_buffer[i];
@@ -108,18 +108,6 @@ static void fn3(request_t *request)
 
 	if(start_upgrade_app != 0) {
 		_printf("start upgrade app!\n");
-
-		if(set_firmware_size(total_size) != 0) {
-			debug("");
-		}
-
-		if(set_firmware_valid(1) != 0) {
-			debug("");
-		}
-
-		if(set_firmware_valid(0) != 0) {
-			debug("");
-		}
 
 		if(set_app_valid(1) != 0) {
 			debug("");
@@ -603,8 +591,9 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 		account_request_info_t account_request_info = {0};
 
 		if(net_client_info != NULL) {
+			char account[32];
 			account_request_info.account_type = ACCOUNT_TYPE_CARD;
-			account_request_info.card_id = card_reader_data->id;
+			account_request_info.account = get_ascii_from_u64(account, sizeof(account), card_reader_data->id);
 			account_request_info.password = "123456";
 			account_request_info.channel_info = NULL;
 			account_request_info.fn = account_request_cb;
@@ -662,7 +651,20 @@ static void fn17(request_t *request)
 static void fn18(request_t *request)
 {
 #if !defined(DISABLE_POWER_MANAGER)
-	start_dump_channels_stats();
+	int ret;
+	char *content = (char *)(request + 1);
+	int fn;
+	int type;
+	int catched;
+
+	ret = sscanf(content, "%d %d%n", &fn, &type, &catched);
+
+	if(ret == 2) {
+		debug("fn:%d, type:%d!", fn, type);
+		start_dump_channels_stats(type);
+	} else {
+		_hexdumpf(content, request->header.data_size, "%s", __func__);
+	}
 #endif
 }
 

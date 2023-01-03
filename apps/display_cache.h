@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2022年03月18日 星期五 17时33分23秒
+ *   修改日期：2022年12月13日 星期二 14时08分16秒
  *   描    述：
  *
  *================================================================*/
@@ -110,7 +110,8 @@ typedef struct {
 	uint8_t module_page;
 	module_item_cache_t module_item_cache[MODULE_ITEM_CACHE_NUMBER];
 
-	uint8_t current_channel;
+	uint8_t popup_type;
+	uint8_t popup_value;
 } display_cache_channels_t;
 
 typedef struct {
@@ -118,22 +119,13 @@ typedef struct {
 	uint16_t dlt_645_addr[6];
 
 	uint8_t charger_start_sync;
-	uint8_t start_reason;
-	uint32_t account_balance;
-	uint16_t start_hour;
-	uint16_t start_min;
-	uint16_t stop_hour;
-	uint16_t stop_min;
-	uint64_t card_id;
+	uint8_t account_type;//account_type_t
 	uint16_t account[16];
 	uint16_t password[16];
-	uint16_t charge_mode;
-	uint16_t charge_amount;
-	uint16_t charge_energy;
-	uint16_t onoff;
-
-	uint8_t energy_meter_type_sync;
-	uint8_t energy_meter_type;
+	uint8_t charge_mode;//channel_record_charge_mode_t
+	uint16_t onoff;//
+	uint16_t charge_condition_h;//按金额 32位无符号(0.01元) 按时长 32位无符号(1分) 按电量 32位无符号(1kWh) 按soc 32位无符号(%1)
+	uint16_t charge_condition_l;
 } display_cache_channel_t;
 
 #pragma pack(pop)

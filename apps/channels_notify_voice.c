@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2022年05月12日 星期四 11时52分59秒
+ *   修改日期：2022年03月24日 星期四 11时12分20秒
  *   描    述：
  *
  *================================================================*/
@@ -61,7 +61,7 @@ static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 		case CHANNELS_NOTIFY_CHANNEL_STATE_CHANGE: {
 			channel_info_t *channel_info = (channel_info_t *)channels_notify_ctx->ctx;
 
-			switch(channel_info->state) {
+			switch(channel_info->request_state) {
 				case CHANNEL_STATE_IDLE: {
 					request_voice(voice_info, VOICE_DATA_WELCOM_NEXT_VISIT);
 				}

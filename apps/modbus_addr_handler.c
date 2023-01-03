@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2022年09月05日 星期一 11时06分47秒
+ *   修改日期：2022年12月13日 星期二 14时35分29秒
  *   描    述：
  *
  *================================================================*/
@@ -55,7 +55,7 @@
 
 typedef struct {
 	uint8_t id;
-	uint8_t field;
+	uint16_t field;
 	uint16_t buffer_start;
 	uint16_t offset;
 } enum_info_t;
@@ -208,147 +208,156 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 	}
 }
 
-#define add_modbus_data_get_set_channel_status_field_case(channel_id, field_name) \
-	add_modbus_data_get_set_item_case(CHANNEL_##channel_id##_STATUS_##field_name)
+#define add_modbus_data_get_set_channel_item_field_case(channel_id, field_name) \
+	add_modbus_data_get_set_item_case(CHANNEL_##channel_id##_ITEM_##field_name)
 
-#define add_modbus_data_get_set_channel_status_word_field_l_case(channel_id, field_name) \
-	add_modbus_data_get_set_word_item_l_case(CHANNEL_##channel_id##_STATUS_##field_name)
+#define add_modbus_data_get_set_channel_item_word_field_l_case(channel_id, field_name) \
+	add_modbus_data_get_set_word_item_l_case(CHANNEL_##channel_id##_ITEM_##field_name)
 
-#define add_modbus_data_get_set_channel_status_word_field_h_case(channel_id, field_name) \
-	add_modbus_data_get_set_word_item_h_case(CHANNEL_##channel_id##_STATUS_##field_name)
+#define add_modbus_data_get_set_channel_item_word_field_h_case(channel_id, field_name) \
+	add_modbus_data_get_set_word_item_h_case(CHANNEL_##channel_id##_ITEM_##field_name)
 
-#define add_modbus_data_get_set_channel_status_case(channel_id) \
-	add_modbus_data_get_set_channel_status_field_case(channel_id, STATE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, VOLTAGE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, CURRENT): \
-	case add_modbus_data_get_set_channel_status_word_field_l_case(channel_id, CHARGE_ENERGY): \
-	case add_modbus_data_get_set_channel_status_word_field_h_case(channel_id, CHARGE_ENERGY): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, CHARGE_DURATION): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, REQUIRE_VOLTAGE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, REQUIRE_CURRENT): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, CHANNEL_FAULT): \
-	case add_modbus_data_get_set_channel_status_word_field_l_case(channel_id, ACCOUNT_BALANCE): \
-	case add_modbus_data_get_set_channel_status_word_field_h_case(channel_id, ACCOUNT_BALANCE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, START_STOP): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, REMAIN_MIN): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, SOC): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, AMOUNT): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, PRICE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, CHARGER_CONNECT_STATE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, INSULATION_RESISTOR): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, TEMPERATURE_P): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, TEMPERATURE_N): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, CHARGER_LOCK_STATE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, INSULATION_STATE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BATTERY_TYPE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, TOTAL_BATTERY_RATE_CAPICITY): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BCS_SINGLE_BATTERY_MAX_VOLTAGE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BCP_MAX_TEMPERATURE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BSM_BATTERY_MAX_TEMPERATURE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BCS_CHARGE_VOLTAGE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BCS_CHARGE_CURRENT): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BHM_MAX_CHARGE_VOLTAGE): \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, BRM_TOTAL_BATTERY_RATE_VOLTAGE)
+#define add_modbus_data_get_set_channel_items_case(channel_id) \
+	add_modbus_data_get_set_channel_item_field_case(channel_id, STATE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CURRENT): \
+	case add_modbus_data_get_set_channel_item_word_field_l_case(channel_id, CHARGE_ENERGY): \
+	case add_modbus_data_get_set_channel_item_word_field_h_case(channel_id, CHARGE_ENERGY): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_DURATION): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, REQUIRE_VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, REQUIRE_CURRENT): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHANNEL_FAULT): \
+	case add_modbus_data_get_set_channel_item_word_field_l_case(channel_id, ACCOUNT_BALANCE): \
+	case add_modbus_data_get_set_channel_item_word_field_h_case(channel_id, ACCOUNT_BALANCE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, START_STOP): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, REMAIN_MIN): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, SOC): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, AMOUNT): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, PRICE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGER_CONNECT_STATE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, INSULATION_RESISTOR): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, TEMPERATURE_P): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, TEMPERATURE_N): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGER_LOCK_STATE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, INSULATION_STATE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BATTERY_TYPE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, TOTAL_BATTERY_RATE_CAPICITY): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BCS_SINGLE_BATTERY_MAX_VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BCP_MAX_TEMPERATURE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BSM_BATTERY_MAX_TEMPERATURE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BCS_CHARGE_VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BCS_CHARGE_CURRENT): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BHM_MAX_CHARGE_VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, BRM_TOTAL_BATTERY_RATE_VOLTAGE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_MODE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_CONDITION): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, ACCOUNT_TYPE)
 
-#define add_channel_status_field_type_case(field_name) \
-	CHANNEL_STATUS_FIELD_TYPE_##field_name
+#define add_channel_item_field_type_case(field_name) \
+	CHANNEL_ITEM_FIELD_TYPE_##field_name
 
 typedef enum {
-	add_channel_status_field_type_case(STATE),
-	add_channel_status_field_type_case(VOLTAGE),
-	add_channel_status_field_type_case(CURRENT),
-	add_channel_status_field_type_case(CHARGE_ENERGY),
-	add_channel_status_field_type_case(CHARGE_DURATION),
-	add_channel_status_field_type_case(REQUIRE_VOLTAGE),
-	add_channel_status_field_type_case(REQUIRE_CURRENT),
-	add_channel_status_field_type_case(CHANNEL_FAULT),
-	add_channel_status_field_type_case(ACCOUNT_BALANCE),
-	add_channel_status_field_type_case(START_STOP),
-	add_channel_status_field_type_case(REMAIN_MIN),
-	add_channel_status_field_type_case(SOC),
-	add_channel_status_field_type_case(AMOUNT),
-	add_channel_status_field_type_case(PRICE),
-	add_channel_status_field_type_case(CHARGER_CONNECT_STATE),
-	add_channel_status_field_type_case(INSULATION_RESISTOR),
-	add_channel_status_field_type_case(TEMPERATURE_P),
-	add_channel_status_field_type_case(TEMPERATURE_N),
-	add_channel_status_field_type_case(CHARGER_LOCK_STATE),
-	add_channel_status_field_type_case(INSULATION_STATE),
-	add_channel_status_field_type_case(BATTERY_TYPE),
-	add_channel_status_field_type_case(TOTAL_BATTERY_RATE_CAPICITY),
-	add_channel_status_field_type_case(BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY),
-	add_channel_status_field_type_case(BCS_SINGLE_BATTERY_MAX_VOLTAGE),
-	add_channel_status_field_type_case(BCP_MAX_TEMPERATURE),
-	add_channel_status_field_type_case(BSM_BATTERY_MAX_TEMPERATURE),
-	add_channel_status_field_type_case(BCS_CHARGE_VOLTAGE),
-	add_channel_status_field_type_case(BCS_CHARGE_CURRENT),
-	add_channel_status_field_type_case(BHM_MAX_CHARGE_VOLTAGE),
-	add_channel_status_field_type_case(BRM_TOTAL_BATTERY_RATE_VOLTAGE),
-} channel_status_field_type_t;
+	add_channel_item_field_type_case(STATE) = 0,
+	add_channel_item_field_type_case(VOLTAGE),
+	add_channel_item_field_type_case(CURRENT),
+	add_channel_item_field_type_case(CHARGE_ENERGY),
+	add_channel_item_field_type_case(CHARGE_DURATION),
+	add_channel_item_field_type_case(REQUIRE_VOLTAGE),
+	add_channel_item_field_type_case(REQUIRE_CURRENT),
+	add_channel_item_field_type_case(CHANNEL_FAULT),
+	add_channel_item_field_type_case(ACCOUNT_BALANCE),
+	add_channel_item_field_type_case(START_STOP),
+	add_channel_item_field_type_case(REMAIN_MIN),
+	add_channel_item_field_type_case(SOC),
+	add_channel_item_field_type_case(AMOUNT),
+	add_channel_item_field_type_case(PRICE),
+	add_channel_item_field_type_case(CHARGER_CONNECT_STATE),
+	add_channel_item_field_type_case(INSULATION_RESISTOR),
+	add_channel_item_field_type_case(TEMPERATURE_P),
+	add_channel_item_field_type_case(TEMPERATURE_N),
+	add_channel_item_field_type_case(CHARGER_LOCK_STATE),
+	add_channel_item_field_type_case(INSULATION_STATE),
+	add_channel_item_field_type_case(BATTERY_TYPE),
+	add_channel_item_field_type_case(TOTAL_BATTERY_RATE_CAPICITY),
+	add_channel_item_field_type_case(BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY),
+	add_channel_item_field_type_case(BCS_SINGLE_BATTERY_MAX_VOLTAGE),
+	add_channel_item_field_type_case(BCP_MAX_TEMPERATURE),
+	add_channel_item_field_type_case(BSM_BATTERY_MAX_TEMPERATURE),
+	add_channel_item_field_type_case(BCS_CHARGE_VOLTAGE),
+	add_channel_item_field_type_case(BCS_CHARGE_CURRENT),
+	add_channel_item_field_type_case(BHM_MAX_CHARGE_VOLTAGE),
+	add_channel_item_field_type_case(BRM_TOTAL_BATTERY_RATE_VOLTAGE),
+	add_channel_item_field_type_case(CHARGE_MODE),
+	add_channel_item_field_type_case(CHARGE_CONDITION),
+	add_channel_item_field_type_case(ACCOUNT_TYPE),
+} channel_item_field_type_t;
 
-#define add_get_channel_status_enum_info_field_case(channel_id, enum_info, field_name) \
-	case add_modbus_data_get_set_channel_status_field_case(channel_id, field_name): { \
+#define add_get_channel_item_enum_info_field_case(channel_id, enum_info, field_name) \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, field_name): { \
 		enum_info->id = channel_id; \
-		enum_info->field = add_channel_status_field_type_case(field_name); \
+		enum_info->field = add_channel_item_field_type_case(field_name); \
 	} \
 	break
 
-#define add_get_channel_status_word_enum_info_field_l_case(channel_id, enum_info, field_name) \
-	case add_modbus_data_get_set_channel_status_word_field_l_case(channel_id, field_name): { \
+#define add_get_channel_item_word_enum_info_field_l_case(channel_id, enum_info, field_name) \
+	case add_modbus_data_get_set_channel_item_word_field_l_case(channel_id, field_name): { \
 		enum_info->id = channel_id; \
-		enum_info->field = add_channel_status_field_type_case(field_name); \
+		enum_info->field = add_channel_item_field_type_case(field_name); \
 		enum_info->offset = 0; \
 	} \
 	break
 
-#define add_get_channel_status_word_enum_info_field_h_case(channel_id, enum_info, field_name) \
-	case add_modbus_data_get_set_channel_status_word_field_h_case(channel_id, field_name): { \
+#define add_get_channel_item_word_enum_info_field_h_case(channel_id, enum_info, field_name) \
+	case add_modbus_data_get_set_channel_item_word_field_h_case(channel_id, field_name): { \
 		enum_info->id = channel_id; \
-		enum_info->field = add_channel_status_field_type_case(field_name); \
+		enum_info->field = add_channel_item_field_type_case(field_name); \
 		enum_info->offset = 1; \
 	} \
 	break
 
-#define add_get_channel_status_enum_info_case(channel_id, enum_info) \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, STATE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, VOLTAGE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, CURRENT); \
-	add_get_channel_status_word_enum_info_field_l_case(channel_id, enum_info, CHARGE_ENERGY); \
-	add_get_channel_status_word_enum_info_field_h_case(channel_id, enum_info, CHARGE_ENERGY); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, CHARGE_DURATION); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, REQUIRE_VOLTAGE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, REQUIRE_CURRENT); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, CHANNEL_FAULT); \
-	add_get_channel_status_word_enum_info_field_l_case(channel_id, enum_info, ACCOUNT_BALANCE); \
-	add_get_channel_status_word_enum_info_field_h_case(channel_id, enum_info, ACCOUNT_BALANCE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, START_STOP); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, REMAIN_MIN); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, SOC); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, AMOUNT); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, PRICE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, CHARGER_CONNECT_STATE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, INSULATION_RESISTOR); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, TEMPERATURE_P); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, TEMPERATURE_N); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, CHARGER_LOCK_STATE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, INSULATION_STATE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BATTERY_TYPE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, TOTAL_BATTERY_RATE_CAPICITY); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BCS_SINGLE_BATTERY_MAX_VOLTAGE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BCP_MAX_TEMPERATURE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BSM_BATTERY_MAX_TEMPERATURE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BCS_CHARGE_VOLTAGE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BCS_CHARGE_CURRENT); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BHM_MAX_CHARGE_VOLTAGE); \
-	add_get_channel_status_enum_info_field_case(channel_id, enum_info, BRM_TOTAL_BATTERY_RATE_VOLTAGE)
+#define add_get_channel_item_enum_info_case(channel_id, enum_info) \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, STATE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CURRENT); \
+	add_get_channel_item_word_enum_info_field_l_case(channel_id, enum_info, CHARGE_ENERGY); \
+	add_get_channel_item_word_enum_info_field_h_case(channel_id, enum_info, CHARGE_ENERGY); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_DURATION); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, REQUIRE_VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, REQUIRE_CURRENT); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHANNEL_FAULT); \
+	add_get_channel_item_word_enum_info_field_l_case(channel_id, enum_info, ACCOUNT_BALANCE); \
+	add_get_channel_item_word_enum_info_field_h_case(channel_id, enum_info, ACCOUNT_BALANCE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, START_STOP); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, REMAIN_MIN); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, SOC); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, AMOUNT); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, PRICE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGER_CONNECT_STATE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, INSULATION_RESISTOR); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, TEMPERATURE_P); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, TEMPERATURE_N); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGER_LOCK_STATE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, INSULATION_STATE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BATTERY_TYPE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, TOTAL_BATTERY_RATE_CAPICITY); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BCS_SINGLE_BATTERY_MAX_VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BCP_MAX_TEMPERATURE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BSM_BATTERY_MAX_TEMPERATURE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BCS_CHARGE_VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BCS_CHARGE_CURRENT); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BHM_MAX_CHARGE_VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BRM_TOTAL_BATTERY_RATE_VOLTAGE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_MODE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_CONDITION); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, ACCOUNT_TYPE)
 
-static void get_channel_status_enum_info(modbus_slave_addr_t addr, enum_info_t *enum_info)
+static void get_channel_item_enum_info(modbus_slave_addr_t addr, enum_info_t *enum_info)
 {
 	switch(addr) {
-			add_get_channel_status_enum_info_case(0, enum_info);
-			add_get_channel_status_enum_info_case(1, enum_info);
+			add_get_channel_item_enum_info_case(0, enum_info);
+			add_get_channel_item_enum_info_case(1, enum_info);
 
 		default: {
 			debug("not handle addr %d", addr);
@@ -359,7 +368,7 @@ static void get_channel_status_enum_info(modbus_slave_addr_t addr, enum_info_t *
 	}
 }
 
-static void modbus_data_action_channel_status(channels_info_t *channels_info, modbus_data_ctx_t *modbus_data_ctx, enum_info_t *enum_info)
+static void modbus_data_action_channel_items(channels_info_t *channels_info, modbus_data_ctx_t *modbus_data_ctx, enum_info_t *enum_info)
 {
 	channel_info_t *channel_info = channels_info->channel_info + enum_info->id;
 
@@ -369,22 +378,22 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 	}
 
 	switch(enum_info->field) {
-		case add_channel_status_field_type_case(STATE): {
+		case add_channel_item_field_type_case(STATE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->state);
 		}
 		break;
 
-		case add_channel_status_field_type_case(VOLTAGE): {
+		case add_channel_item_field_type_case(VOLTAGE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->voltage);
 		}
 		break;
 
-		case add_channel_status_field_type_case(CURRENT): {
+		case add_channel_item_field_type_case(CURRENT): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->current);
 		}
 		break;
 
-		case add_channel_status_field_type_case(CHARGE_ENERGY): {
+		case add_channel_item_field_type_case(CHARGE_ENERGY): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				if(enum_info->offset == 0) {
 					modbus_data_value_r(modbus_data_ctx, get_u16_0_from_u32(channel_info->channel_record_item.energy));
@@ -399,7 +408,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(CHARGE_DURATION): {
+		case add_channel_item_field_type_case(CHARGE_DURATION): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				modbus_data_value_r(modbus_data_ctx, (get_time() - channel_info->channel_record_item.start_time) / 60);
 			} else {
@@ -408,17 +417,17 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(REQUIRE_VOLTAGE): {
+		case add_channel_item_field_type_case(REQUIRE_VOLTAGE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->require_voltage);
 		}
 		break;
 
-		case add_channel_status_field_type_case(REQUIRE_CURRENT): {
+		case add_channel_item_field_type_case(REQUIRE_CURRENT): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->require_current);
 		}
 		break;
 
-		case add_channel_status_field_type_case(CHANNEL_FAULT): {
+		case add_channel_item_field_type_case(CHANNEL_FAULT): {
 			int fault;
 			fault = get_first_fault(channels_info->faults);
 
@@ -430,7 +439,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(ACCOUNT_BALANCE): {
+		case add_channel_item_field_type_case(ACCOUNT_BALANCE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				if(enum_info->offset == 0) {
 					modbus_data_value_r(modbus_data_ctx, get_u16_0_from_u32(channel_info->channel_record_item.account_balance));
@@ -445,54 +454,16 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(START_STOP): {//开关机
-			modbus_data_value_r(modbus_data_ctx, (channel_info->state == CHANNEL_STATE_CHARGING) ? 1 : 0);
+		case add_channel_item_field_type_case(START_STOP): {//开关机
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.onoff);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_event_t *channel_event = os_calloc(1, sizeof(channel_event_t));
-				channels_event_t *channels_event = os_calloc(1, sizeof(channels_event_t));
-				uint8_t channel_id = channel_info->channel_id;
-				uint8_t type = (modbus_data_ctx->value != 0) ? CHANNEL_EVENT_TYPE_START_CHANNEL : CHANNEL_EVENT_TYPE_STOP_CHANNEL;
-
-				OS_ASSERT(channel_event != NULL);
-				OS_ASSERT(channels_event != NULL);
-
-				switch(type) {
-					case CHANNEL_EVENT_TYPE_START_CHANNEL: {
-						channel_info->channel_event_start_display.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
-						channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(MANUAL);
-					}
-					break;
-
-					case CHANNEL_EVENT_TYPE_STOP_CHANNEL: {
-						channel_info->channel_event_stop.stop_reason = channel_record_item_stop_reason(MANUAL);
-					}
-					break;
-
-					default: {
-					}
-					break;
-				}
-
-				channel_event->channel_id = channel_id;
-				channel_event->type = type;
-				channel_event->ctx = &channel_info->channel_event_start_display;
-
-				channels_event->type = CHANNELS_EVENT_CHANNEL;
-				channels_event->event = channel_event;
-
-				if(send_channels_event(channels_info, channels_event, 100) != 0) {
-					os_free(channels_event->event);
-					os_free(channels_event);
-					debug("send channel %d type %d failed!", channel_id, type);
-				} else {
-					debug("send channel %d type %d successful!", channel_id, type);
-				}
+				channel_info->display_cache_channel.charger_start_sync = 1;
 			}
 		}
 		break;
 
-		case add_channel_status_field_type_case(REMAIN_MIN): {
+		case add_channel_item_field_type_case(REMAIN_MIN): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcs_data.remain_min);
@@ -502,7 +473,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(SOC): {
+		case add_channel_item_field_type_case(SOC): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcs_data.soc);
@@ -512,7 +483,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(AMOUNT): {
+		case add_channel_item_field_type_case(AMOUNT): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				modbus_data_value_r(modbus_data_ctx, channel_info->channel_record_item.amount);
 			} else {
@@ -521,44 +492,44 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(PRICE): {
+		case add_channel_item_field_type_case(PRICE): {
 			time_t ts = get_time();
-			uint32_t price = get_current_price(channel_info, ts);
+			uint32_t price = get_current_energy_price(channel_info, ts);
 			modbus_data_value_r(modbus_data_ctx, price);
 		}
 		break;
 
-		case add_channel_status_field_type_case(CHARGER_CONNECT_STATE): {
+		case add_channel_item_field_type_case(CHARGER_CONNECT_STATE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->charger_connect_state);
 		}
 		break;
 
-		case add_channel_status_field_type_case(INSULATION_RESISTOR): {
+		case add_channel_item_field_type_case(INSULATION_RESISTOR): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->insulation_resistor);
 		}
 		break;
 
-		case add_channel_status_field_type_case(TEMPERATURE_P): {
+		case add_channel_item_field_type_case(TEMPERATURE_P): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_p + 20);
 		}
 		break;
 
-		case add_channel_status_field_type_case(TEMPERATURE_N): {
+		case add_channel_item_field_type_case(TEMPERATURE_N): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->temperature_n + 20);
 		}
 		break;
 
-		case add_channel_status_field_type_case(CHARGER_LOCK_STATE): {
+		case add_channel_item_field_type_case(CHARGER_LOCK_STATE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->charger_lock_state);
 		}
 		break;
 
-		case add_channel_status_field_type_case(INSULATION_STATE): {
+		case add_channel_item_field_type_case(INSULATION_STATE): {
 			modbus_data_value_r(modbus_data_ctx, channel_info->insulation_state);
 		}
 		break;
 
-		case add_channel_status_field_type_case(BATTERY_TYPE): {
+		case add_channel_item_field_type_case(BATTERY_TYPE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.brm_data.brm_data.battery_type);
@@ -568,7 +539,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(TOTAL_BATTERY_RATE_CAPICITY): {
+		case add_channel_item_field_type_case(TOTAL_BATTERY_RATE_CAPICITY): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.brm_data.brm_data.total_battery_rate_capicity);
@@ -578,7 +549,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY): {
+		case add_channel_item_field_type_case(BCP_MAX_CHARGE_VOLTAGE_SINGLE_BATTERY): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcp_data.max_charge_voltage_single_battery);
@@ -588,7 +559,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BCS_SINGLE_BATTERY_MAX_VOLTAGE): {
+		case add_channel_item_field_type_case(BCS_SINGLE_BATTERY_MAX_VOLTAGE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcs_data.u1.s.single_battery_max_voltage);
@@ -598,7 +569,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BCP_MAX_TEMPERATURE): {
+		case add_channel_item_field_type_case(BCP_MAX_TEMPERATURE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcp_data.max_temperature);
@@ -608,7 +579,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BSM_BATTERY_MAX_TEMPERATURE): {
+		case add_channel_item_field_type_case(BSM_BATTERY_MAX_TEMPERATURE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bsm_data.battery_max_temperature);
@@ -618,7 +589,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BCS_CHARGE_VOLTAGE): {
+		case add_channel_item_field_type_case(BCS_CHARGE_VOLTAGE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bcs_data.charge_voltage);
@@ -628,7 +599,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BCS_CHARGE_CURRENT): {
+		case add_channel_item_field_type_case(BCS_CHARGE_CURRENT): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				uint16_t charge_current = 4000 - charger_info->bms_data.bcs_data.charge_current;
@@ -639,7 +610,7 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BHM_MAX_CHARGE_VOLTAGE): {
+		case add_channel_item_field_type_case(BHM_MAX_CHARGE_VOLTAGE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.bhm_data.max_charge_voltage);
@@ -649,13 +620,28 @@ static void modbus_data_action_channel_status(channels_info_t *channels_info, mo
 		}
 		break;
 
-		case add_channel_status_field_type_case(BRM_TOTAL_BATTERY_RATE_VOLTAGE): {
+		case add_channel_item_field_type_case(BRM_TOTAL_BATTERY_RATE_VOLTAGE): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
 				charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
 				modbus_data_value_r(modbus_data_ctx, charger_info->bms_data.brm_data.brm_data.total_battery_rate_voltage);
 			} else {
 				modbus_data_value_r(modbus_data_ctx, 0);
 			}
+		}
+		break;
+
+		case add_channel_item_field_type_case(CHARGE_MODE): {
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_mode);
+		}
+		break;
+
+		case add_channel_item_field_type_case(CHARGE_CONDITION): {
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_condition_l);
+		}
+		break;
+
+		case add_channel_item_field_type_case(ACCOUNT_TYPE): {
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.account_type);
 		}
 		break;
 
@@ -898,13 +884,13 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		case add_modbus_data_get_set_item_case(VIN_VERIFY_ENABLE): {
-			modbus_data_value_rw(modbus_data_ctx, channels_settings->vin_verify_enable);
+		case add_modbus_data_get_set_item_case(OFFLINE_AUTHORIZE): {
+			modbus_data_value_rw(modbus_data_ctx, channels_settings->offline_authorize);
 		}
 		break;
 
-		case add_modbus_data_get_set_item_case(PRECHARGE_ENABLE): {
-			modbus_data_value_rw(modbus_data_ctx, channels_settings->precharge_enable);
+		case add_modbus_data_get_set_item_case(PRECHARGE_DISABLE): {
+			modbus_data_value_rw(modbus_data_ctx, channels_settings->precharge_disable);
 		}
 
 		case add_modbus_data_get_set_item_case(POWER_MODULE_TYPE): {
@@ -914,6 +900,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(HUAWEI_REFERENCE_CURRENT): {
 			modbus_data_value_rw(modbus_data_ctx, channels_settings->power_module_settings.rate_current);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(REQUEST_POPUP_CLOSE): {
+			//todo ...
 		}
 		break;
 
@@ -984,7 +975,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_word_item_l_case(WITHHOLDING): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.withholding_l);
-			channels_info->display_cache_channels.withholding_sync = 1;
+			//channels_info->display_cache_channels.withholding_sync = 1;
 		}
 		break;
 
@@ -1037,11 +1028,21 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
+		case add_modbus_data_get_set_item_case(POPUP_TYPE): {
+			modbus_data_value_r(modbus_data_ctx, channels_info->display_cache_channels.popup_type);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(POPUP_VALUE): {
+			modbus_data_value_r(modbus_data_ctx, channels_info->display_cache_channels.popup_value);
+		}
+		break;
+
 		//通道状态
-		case add_modbus_data_get_set_channel_status_case(0):
-		case add_modbus_data_get_set_channel_status_case(1): {
+		case add_modbus_data_get_set_channel_items_case(0):
+		case add_modbus_data_get_set_channel_items_case(1): {
 			enum_info_t enum_info;
-			get_channel_status_enum_info(modbus_data_ctx->addr, &enum_info);
+			get_channel_item_enum_info(modbus_data_ctx->addr, &enum_info);
 			//debug("%s channel %d field %d",
 			//      (modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) ? "get" :
 			//      (modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) ? "set" :
@@ -1049,7 +1050,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			//      enum_info.id,
 			//      enum_info.field);
 
-			modbus_data_action_channel_status(channels_info, modbus_data_ctx, &enum_info);
+			modbus_data_action_channel_items(channels_info, modbus_data_ctx, &enum_info);
 		}
 		break;
 
