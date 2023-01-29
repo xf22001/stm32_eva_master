@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2022年11月10日 星期四 09时27分18秒
+ *   修改日期：2023年01月29日 星期日 11时36分39秒
  *   描    述：
  *
  *================================================================*/
@@ -14,6 +14,7 @@
 #include "os_utils.h"
 #include "power_modules.h"
 #include "ntc_temperature.h"
+#include "hw_adc.h"
 #include "main.h"
 
 extern CAN_HandleTypeDef hcan1;
@@ -181,18 +182,32 @@ channels_config_t *get_channels_config(uint8_t id)
 	return channels_config;
 }
 
-int adc_value_helper(adc_value_type_t adc_value_type, uint16_t adc_value)
+int adc_value_helper(adc_value_type_t adc_value_type, void *ctx)
 {
 	int value = 0;
 
 	switch(adc_value_type) {
 		case ADC_VALUE_TYPE_BOARD_TEMPERATURE: {
-			value = get_ntc_temperature(10000, adc_value, 4095);
+			channels_info_t *channels_info = (channels_info_t *)ctx;
+			adc_info_t *adc_info = NULL;
+			uint16_t temperature_ad = 0;
+			adc_info = get_or_alloc_adc_info(channels_info->channels_config->board_temperature_adc);
+			OS_ASSERT(adc_info != NULL);
+			temperature_ad = get_adc_value(adc_info, channels_info->channels_config->board_temperature_adc_rank);
+			//debug("board temperature ad %d", channels_info->temperature_ad);
+			value = get_ntc_temperature(10000, temperature_ad, 4095);
 		}
 		break;
 
 		case ADC_VALUE_TYPE_CP_AD_VOLTAGE: {
-			value = adc_value * 3300 / 4096;//0v-1.2v 采样 0v-12v
+			channel_info_t *channel_info = (channel_info_t *)ctx;
+			adc_info_t *adc_info = NULL;
+			uint16_t cp_ad = 0;
+			adc_info = get_or_alloc_adc_info(channel_info->channel_config->cp_ad_adc);
+			OS_ASSERT(adc_info != NULL);
+			cp_ad = get_adc_value(adc_info, channel_info->channel_config->cp_ad_adc_rank);
+			//debug("channel %d cp ad:%d", channel_info->channel_id, cp_ad);
+			value = cp_ad * 3300 / 4096;//0v-1.2v 采样 0v-12v
 
 			//(V - 0.5) * 2 / 102 * 8 * 4 / 3 = u
 			//V - 0.5 = u / (2 / 102 * 8 * 4 / 3)
