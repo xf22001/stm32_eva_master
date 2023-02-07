@@ -1,12 +1,12 @@
 
 
 /*================================================================
- *   
- *   
+ *
+ *
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2022年12月13日 星期二 15时50分16秒
+ *   修改日期：2023年02月07日 星期二 10时25分49秒
  *   描    述：
  *
  *================================================================*/
@@ -41,6 +41,14 @@ extern "C"
 #define add_enum_modbus_buffer_with_base(name, length, base) \
 	MODBUS_ADDR_##name##_START = (base), \
 	MODBUS_ADDR_##name##_END = (MODBUS_ADDR_##name##_START + (length) - 1)
+
+#define add_enum_modbus_price_info(seg_id) \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##STOP_HOUR), \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##STOP_MIN), \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##PRICE_H), \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##PRICE_L), \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##SERVICE_PRICE_H), \
+	add_enum_modbus_item(PRICE_INFO_##seg_id##_##SERVICE_PRICE_L)
 
 #define add_enum_modbus_power_module_status(power_module_id) \
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##PDU_GROUP_ID), \
@@ -140,6 +148,57 @@ typedef enum {
 	add_enum_modbus_word_item(WITHHOLDING),
 	add_enum_modbus_item(PE_DETECT_DISABLE),
 
+	//费率
+	MODBUS_ADDR_PRICE_INFO_START = 1999,
+	add_enum_modbus_price_info(0),
+	add_enum_modbus_price_info(1),
+	add_enum_modbus_price_info(2),
+	add_enum_modbus_price_info(3),
+	add_enum_modbus_price_info(4),
+	add_enum_modbus_price_info(5),
+	add_enum_modbus_price_info(6),
+	add_enum_modbus_price_info(7),
+	add_enum_modbus_price_info(8),
+	add_enum_modbus_price_info(9),
+	add_enum_modbus_price_info(10),
+	add_enum_modbus_price_info(11),
+	add_enum_modbus_price_info(12),
+	add_enum_modbus_price_info(13),
+	add_enum_modbus_price_info(14),
+	add_enum_modbus_price_info(15),
+	add_enum_modbus_price_info(16),
+	add_enum_modbus_price_info(17),
+	add_enum_modbus_price_info(18),
+	add_enum_modbus_price_info(19),
+	add_enum_modbus_price_info(20),
+	add_enum_modbus_price_info(21),
+	add_enum_modbus_price_info(22),
+	add_enum_modbus_price_info(23),
+	add_enum_modbus_price_info(24),
+	add_enum_modbus_price_info(25),
+	add_enum_modbus_price_info(26),
+	add_enum_modbus_price_info(27),
+	add_enum_modbus_price_info(28),
+	add_enum_modbus_price_info(29),
+	add_enum_modbus_price_info(30),
+	add_enum_modbus_price_info(31),
+	add_enum_modbus_price_info(32),
+	add_enum_modbus_price_info(33),
+	add_enum_modbus_price_info(34),
+	add_enum_modbus_price_info(35),
+	add_enum_modbus_price_info(36),
+	add_enum_modbus_price_info(37),
+	add_enum_modbus_price_info(38),
+	add_enum_modbus_price_info(39),
+	add_enum_modbus_price_info(40),
+	add_enum_modbus_price_info(41),
+	add_enum_modbus_price_info(42),
+	add_enum_modbus_price_info(43),
+	add_enum_modbus_price_info(44),
+	add_enum_modbus_price_info(45),
+	add_enum_modbus_price_info(46),
+	add_enum_modbus_price_info(47),
+
 	//桩状态
 	MODBUS_ADDR_POWER_MODULE_STATUS_START = 20000,
 	add_enum_modbus_power_module_status(0),
@@ -191,7 +250,7 @@ typedef enum {
 	add_enum_modbus_channel_record_status(7, 40800),
 	add_enum_modbus_channel_record_status(8, 40900),
 	add_enum_modbus_channel_record_status(9, 41000),
-	
+
 } modbus_slave_addr_t;
 
 typedef enum {

@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2022年09月09日 星期五 17时08分38秒
+#   修改日期：2023年02月06日 星期一 09时33分48秒
 #   描    述：
 #
 #================================================================
@@ -121,15 +121,36 @@ USER_C_SOURCES += apps/modules/app/voice.c
 endif
 ifeq ($(call ifdef_any_of,DISABLE_POWER_MANAGER),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules.c
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_NONE),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_none.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_PSEUDO),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_pseudo.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_HUAWEI),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_huawei.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_INCREASE),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_increase.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_INFY),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_infy.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_STATEGRID),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_stategrid.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_YYLN),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_yyln.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_WINLINE),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_winline.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_ZTE),)
 USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
+endif
+ifneq ($(call ifdef_any_of,POWER_MODULES_HANDLER_INFY_V2G),)
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_infy_v2g.c
+endif
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager.c
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager_handler_native.c
 USER_C_SOURCES += apps/modules/app/power_manager/power_manager_group_policy_chain.c
@@ -158,7 +179,7 @@ USER_C_SOURCES += apps/modules/app/charger/multi_charge_comm_proxy.c
 endif
 USER_C_SOURCES += apps/modules/app/charger/charger.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
-ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB CHARGER_BMS_HANDLER_PLC_CCS CHARGER_BMS_HANDLER_GB_MULTI_CHARGE),)
+ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB CHARGER_BMS_HANDLER_GB_V2G CHARGER_BMS_HANDLER_PLC_CCS CHARGER_BMS_HANDLER_GB_MULTI_CHARGE),)
 USER_C_SOURCES += apps/modules/app/bms_multi_data.c
 endif
 USER_C_SOURCES += apps/modules/app/charger/function_board.c
@@ -170,6 +191,9 @@ USER_C_SOURCES += apps/modules/app/charger/function_board_handler_v5.c
 endif
 ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB),)
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
+endif
+ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_GB_V2G),)
+USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb_v2g.c
 endif
 ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_PLC_CCS),)
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_plc_ccs.c
