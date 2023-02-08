@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2022年12月13日 星期二 17时34分59秒
+ *   修改日期：2023年02月08日 星期三 15时24分04秒
  *   描    述：
  *
  *================================================================*/
@@ -466,7 +466,6 @@ static void display_start_channel(channel_info_t *channel_info)
 	}
 }
 
-#if !defined(DISABLE_CARDREADER)
 static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
 	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
@@ -494,6 +493,42 @@ static void account_request_cb(void *fn_ctx, void *chain_ctx)
 	}
 }
 
+static void password_confirm_cb_fn(channel_info_t *channel_info)
+{
+	channels_info_t *channels_info = channel_info->channels_info;
+	net_client_info_t *net_client_info = get_net_client_info();
+
+	if(net_client_info != NULL) {
+		if(ticks_duration(channel_info->display_cache_channel.alive_stamps, osKernelSysTick()) >= 60000) {
+			account_response_info_t account_response_info = {0};
+			//无后台刷卡
+			debug("");
+			account_response_info.channel_info = channel_info;
+			account_response_info.code = ACCOUNT_STATE_CODE_GET_PASSWORD_TIMEOUT;
+			account_response_info.balance = 0;
+			account_request_cb(channels_info, &account_response_info);
+		} else {
+			account_request_info_t account_request_info = {0};
+			account_request_info.account_type = channel_info->display_cache_channel.account_type;
+			account_request_info.account = (char *)&channel_info->display_cache_channel.account[0];
+			account_request_info.password = (char *)&channel_info->display_cache_channel.password[0];
+			account_request_info.channel_info = channel_info;
+			account_request_info.fn = account_request_cb;
+			net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
+			debug("");
+		}
+	} else {
+		account_response_info_t account_response_info = {0};
+		//无后台刷卡
+		debug("");
+		account_response_info.channel_info = channel_info;
+		account_response_info.code = ACCOUNT_STATE_CODE_OFFLINE;
+		account_response_info.balance = 0;
+		account_request_cb(channels_info, &account_response_info);
+	}
+}
+
+#if !defined(DISABLE_CARDREADER)
 static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 {
 	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
@@ -501,31 +536,13 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 	channels_info_t *channels_info = channel_info->channels_info;
 
 	if(card_reader_data != NULL) {
-		net_client_info_t *net_client_info = get_net_client_info();
-		account_request_info_t account_request_info = {0};
-
-		if(net_client_info != NULL) {
-			char account[32];
-			account_request_info.account_type = ACCOUNT_TYPE_CARD;
-			account_request_info.account = get_ascii_from_u64(account, sizeof(account), card_reader_data->id);
-			account_request_info.password = "123456";
-			account_request_info.channel_info = channel_info;
-			account_request_info.fn = account_request_cb;
-			net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
-			debug("");
-		} else {
-			account_response_info_t account_response_info = {0};
-			//无后台刷卡
-			debug("");
-			account_response_info.channel_info = channel_info;
-			account_response_info.code = ACCOUNT_STATE_CODE_OFFLINE;
-			account_response_info.balance = 0;
-			account_request_cb(channels_info, &account_response_info);
-		}
+		get_ascii_from_u64((char *)&channel_info->display_cache_channel.account[0], sizeof(channel_info->display_cache_channel.account), card_reader_data->id);
+		channel_info->display_cache_channel.alive_stamps = osKernelSysTick();
+		start_popup(channels_info, MODBUS_POPUP_TYPE_PASSWORD, 0);
 	} else {
 		account_response_info_t account_response_info = {0};
 		account_response_info.channel_info = channel_info;
-		account_response_info.code = ACCOUNT_STATE_CODE_UNKNOW;
+		account_response_info.code = ACCOUNT_STATE_CODE_GET_CARD_TIMEOUT;
 		account_response_info.balance = 0;
 		account_request_cb(channels_info, &account_response_info);
 	}
@@ -612,6 +629,11 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 		} else {//关机
 			channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
 		}
+	}
+
+	if(channel_info->display_cache_channel.account_password_sync == 1) {
+		channel_info->display_cache_channel.account_password_sync = 0;
+		password_confirm_cb_fn(channel_info);
 	}
 }
 

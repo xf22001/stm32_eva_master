@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2022年12月13日 星期二 14时08分16秒
+ *   修改日期：2023年02月08日 星期三 13时56分26秒
  *   描    述：
  *
  *================================================================*/
@@ -39,10 +39,10 @@ typedef struct {
 typedef struct {
 	uint16_t hour;
 	uint16_t min;
-	uint16_t price_h;
 	uint16_t price_l;
-	uint16_t service_price_h;
+	uint16_t price_h;
 	uint16_t service_price_l;
+	uint16_t service_price_h;
 } price_item_cache_t;
 
 typedef struct {
@@ -110,7 +110,7 @@ typedef struct {
 	uint8_t module_page;
 	module_item_cache_t module_item_cache[MODULE_ITEM_CACHE_NUMBER];
 
-	uint8_t popup_type;
+	uint8_t popup_type;//modbus_popup_type_t
 	uint8_t popup_value;
 } display_cache_channels_t;
 
@@ -126,6 +126,8 @@ typedef struct {
 	uint16_t onoff;//
 	uint16_t charge_condition_h;//按金额 32位无符号(0.01元) 按时长 32位无符号(1分) 按电量 32位无符号(1kWh) 按soc 32位无符号(%1)
 	uint16_t charge_condition_l;
+	uint8_t account_password_sync;
+	uint32_t alive_stamps;
 } display_cache_channel_t;
 
 #pragma pack(pop)

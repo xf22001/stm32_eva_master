@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年02月07日 星期二 10时25分49秒
+ *   修改日期：2023年02月08日 星期三 15时25分49秒
  *   描    述：
  *
  *================================================================*/
@@ -45,10 +45,8 @@ extern "C"
 #define add_enum_modbus_price_info(seg_id) \
 	add_enum_modbus_item(PRICE_INFO_##seg_id##_##STOP_HOUR), \
 	add_enum_modbus_item(PRICE_INFO_##seg_id##_##STOP_MIN), \
-	add_enum_modbus_item(PRICE_INFO_##seg_id##_##PRICE_H), \
-	add_enum_modbus_item(PRICE_INFO_##seg_id##_##PRICE_L), \
-	add_enum_modbus_item(PRICE_INFO_##seg_id##_##SERVICE_PRICE_H), \
-	add_enum_modbus_item(PRICE_INFO_##seg_id##_##SERVICE_PRICE_L)
+	add_enum_modbus_word_item(PRICE_INFO_##seg_id##_##PRICE), \
+	add_enum_modbus_word_item(PRICE_INFO_##seg_id##_##SERVICE_PRICE)
 
 #define add_enum_modbus_power_module_status(power_module_id) \
 	add_enum_modbus_item(POWER_MODULE_##power_module_id##_STATUS_##PDU_GROUP_ID), \
@@ -93,9 +91,12 @@ extern "C"
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BCS_CHARGE_CURRENT), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BHM_MAX_CHARGE_VOLTAGE), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BRM_TOTAL_BATTERY_RATE_VOLTAGE), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_MODE), \
+	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##CHARGE_MODE, (base + 90)), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_CONDITION), \
-	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##ACCOUNT_TYPE)
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##ACCOUNT_TYPE), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##PASSWORD_CONFIRM), \
+	add_enum_modbus_buffer_with_base(CHANNEL_##channel_id##_ITEM_##ACCOUNT, 10, (base + 900)), \
+	add_enum_modbus_buffer(CHANNEL_##channel_id##_ITEM_##PASSWORD, 10)
 
 #define add_enum_modbus_channel_record_status(row, base) \
 	add_enum_modbus_item_with_base(CHANNEL_RECORD_##row##_##PAD, base), \
@@ -229,6 +230,8 @@ typedef enum {
 	add_enum_modbus_item_with_base(POPUP_TYPE, 20301),
 	add_enum_modbus_item(POPUP_VALUE),
 
+	add_enum_modbus_item_with_base(CHANNELS_FAULT, 20401),
+
 	//通道地址
 	add_enum_modbus_channel_items(0, 30000),
 	add_enum_modbus_channel_items(1, 31000),
@@ -256,6 +259,7 @@ typedef enum {
 typedef enum {
 	MODBUS_POPUP_TYPE_NONE = 0,
 	MODBUS_POPUP_TYPE_AUTH = 61,
+	MODBUS_POPUP_TYPE_PASSWORD,
 } modbus_popup_type_t;
 
 char *get_modbus_slave_addr_des(modbus_slave_addr_t addr);

@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月07日 星期二 10时26分46秒
+ *   修改日期：2023年02月08日 星期三 15时29分52秒
  *   描    述：
  *
  *================================================================*/
@@ -41,13 +41,19 @@
 #define add_modbus_data_get_set_price_info_field_case(seg_id, field_name) \
 	add_modbus_data_get_set_item_case(PRICE_INFO_##seg_id##_##field_name)
 
+#define add_modbus_data_get_set_price_info_word_field_l_case(seg_id, field_name) \
+	add_modbus_data_get_set_word_item_l_case(PRICE_INFO_##seg_id##_##field_name)
+
+#define add_modbus_data_get_set_price_info_word_field_h_case(seg_id, field_name) \
+	add_modbus_data_get_set_word_item_h_case(PRICE_INFO_##seg_id##_##field_name)
+
 #define add_modbus_data_get_set_price_info_case(seg_id) \
 	add_modbus_data_get_set_price_info_field_case(seg_id, STOP_HOUR): \
 	case add_modbus_data_get_set_price_info_field_case(seg_id, STOP_MIN): \
-	case add_modbus_data_get_set_price_info_field_case(seg_id, PRICE_H): \
-	case add_modbus_data_get_set_price_info_field_case(seg_id, PRICE_L): \
-	case add_modbus_data_get_set_price_info_field_case(seg_id, SERVICE_PRICE_H): \
-	case add_modbus_data_get_set_price_info_field_case(seg_id, SERVICE_PRICE_L)
+	case add_modbus_data_get_set_price_info_word_field_l_case(seg_id, PRICE): \
+	case add_modbus_data_get_set_price_info_word_field_h_case(seg_id, PRICE): \
+	case add_modbus_data_get_set_price_info_word_field_l_case(seg_id, SERVICE_PRICE): \
+	case add_modbus_data_get_set_price_info_word_field_h_case(seg_id, SERVICE_PRICE)
 
 #define add_modbus_data_get_set_power_module_info_field_case(power_module_id, field_name) \
 	add_modbus_data_get_set_item_case(POWER_MODULE_##power_module_id##_STATUS_##field_name)
@@ -77,10 +83,8 @@ typedef struct {
 typedef enum {
 	add_price_field_type_case(STOP_HOUR) = 0,
 	add_price_field_type_case(STOP_MIN),
-	add_price_field_type_case(PRICE_H),
-	add_price_field_type_case(PRICE_L),
-	add_price_field_type_case(SERVICE_PRICE_H),
-	add_price_field_type_case(SERVICE_PRICE_L),
+	add_price_field_type_case(PRICE),
+	add_price_field_type_case(SERVICE_PRICE),
 } price_field_type_t;
 
 #define add_get_price_enum_info_field_case(seg_id, enum_info, field_name) \
@@ -90,13 +94,29 @@ typedef enum {
 	} \
 	break
 
+#define add_get_price_enum_info_word_field_l_case(seg_id, enum_info, field_name) \
+	case add_modbus_data_get_set_price_info_word_field_l_case(seg_id, field_name): { \
+		enum_info->id = seg_id; \
+		enum_info->field = add_price_field_type_case(field_name); \
+		enum_info->offset = 0; \
+	} \
+	break
+
+#define add_get_price_enum_info_word_field_h_case(seg_id, enum_info, field_name) \
+	case add_modbus_data_get_set_price_info_word_field_h_case(seg_id, field_name): { \
+		enum_info->id = seg_id; \
+		enum_info->field = add_price_field_type_case(field_name); \
+		enum_info->offset = 1; \
+	} \
+	break
+
 #define add_get_price_enum_info_case(seg_id, enum_info) \
 	add_get_price_enum_info_field_case(seg_id, enum_info, STOP_HOUR); \
 	add_get_price_enum_info_field_case(seg_id, enum_info, STOP_MIN); \
-	add_get_price_enum_info_field_case(seg_id, enum_info, PRICE_H); \
-	add_get_price_enum_info_field_case(seg_id, enum_info, PRICE_L); \
-	add_get_price_enum_info_field_case(seg_id, enum_info, SERVICE_PRICE_H); \
-	add_get_price_enum_info_field_case(seg_id, enum_info, SERVICE_PRICE_L)
+	add_get_price_enum_info_word_field_l_case(seg_id, enum_info, PRICE); \
+	add_get_price_enum_info_word_field_h_case(seg_id, enum_info, PRICE); \
+	add_get_price_enum_info_word_field_l_case(seg_id, enum_info, SERVICE_PRICE); \
+	add_get_price_enum_info_word_field_h_case(seg_id, enum_info, SERVICE_PRICE)
 
 static void get_price_enum_info(modbus_slave_addr_t addr, enum_info_t *enum_info)
 {
@@ -179,23 +199,21 @@ static void modbus_data_action_price_info(channels_info_t *channels_info, modbus
 		}
 		break;
 
-		case add_price_field_type_case(PRICE_H): {
-			modbus_data_value_rw(modbus_data_ctx, price_item_cache->price_h);
+		case add_price_field_type_case(PRICE): {
+			if(enum_info->offset == 0) {
+				modbus_data_value_rw(modbus_data_ctx, price_item_cache->price_l);
+			} else if(enum_info->offset == 1) {
+				modbus_data_value_rw(modbus_data_ctx, price_item_cache->price_h);
+			}
 		}
 		break;
 
-		case add_price_field_type_case(PRICE_L): {
-			modbus_data_value_rw(modbus_data_ctx, price_item_cache->price_l);
-		}
-		break;
-
-		case add_price_field_type_case(SERVICE_PRICE_H): {
-			modbus_data_value_rw(modbus_data_ctx, price_item_cache->service_price_h);
-		}
-		break;
-
-		case add_price_field_type_case(SERVICE_PRICE_L): {
-			modbus_data_value_rw(modbus_data_ctx, price_item_cache->service_price_l);
+		case add_price_field_type_case(SERVICE_PRICE): {
+			if(enum_info->offset == 0) {
+				modbus_data_value_rw(modbus_data_ctx, price_item_cache->service_price_l);
+			} else if(enum_info->offset == 1) {
+				modbus_data_value_rw(modbus_data_ctx, price_item_cache->service_price_h);
+			}
 		}
 		break;
 
@@ -364,6 +382,9 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 #define add_modbus_data_get_set_channel_item_word_field_h_case(channel_id, field_name) \
 	add_modbus_data_get_set_word_item_h_case(CHANNEL_##channel_id##_ITEM_##field_name)
 
+#define add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, field_name) \
+	add_modbus_data_get_set_buffer_case(CHANNEL_##channel_id##_ITEM_##field_name)
+
 #define add_modbus_data_get_set_channel_items_case(channel_id) \
 	add_modbus_data_get_set_channel_item_field_case(channel_id, STATE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, VOLTAGE): \
@@ -399,7 +420,10 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, BRM_TOTAL_BATTERY_RATE_VOLTAGE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_MODE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_CONDITION): \
-	case add_modbus_data_get_set_channel_item_field_case(channel_id, ACCOUNT_TYPE)
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, ACCOUNT_TYPE): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, PASSWORD_CONFIRM): \
+	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, ACCOUNT): \
+	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, PASSWORD)
 
 #define add_channel_item_field_type_case(field_name) \
 	CHANNEL_ITEM_FIELD_TYPE_##field_name
@@ -438,6 +462,9 @@ typedef enum {
 	add_channel_item_field_type_case(CHARGE_MODE),
 	add_channel_item_field_type_case(CHARGE_CONDITION),
 	add_channel_item_field_type_case(ACCOUNT_TYPE),
+	add_channel_item_field_type_case(PASSWORD_CONFIRM),
+	add_channel_item_field_type_case(ACCOUNT),
+	add_channel_item_field_type_case(PASSWORD),
 } channel_item_field_type_t;
 
 #define add_get_channel_item_enum_info_field_case(channel_id, enum_info, field_name) \
@@ -460,6 +487,18 @@ typedef enum {
 		enum_info->id = channel_id; \
 		enum_info->field = add_channel_item_field_type_case(field_name); \
 		enum_info->offset = 1; \
+	} \
+	break
+
+#define modbus_data_get_set_channel_item_buffer_start(channel_id, field_name) \
+	modbus_data_get_set_buffer_start(CHANNEL_##channel_id##_ITEM_##field_name)
+
+
+#define add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, field_name) \
+	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, field_name): { \
+		enum_info->id = channel_id; \
+		enum_info->field = add_channel_item_field_type_case(field_name); \
+		enum_info->buffer_start = modbus_data_get_set_channel_item_buffer_start(channel_id, field_name); \
 	} \
 	break
 
@@ -498,7 +537,10 @@ typedef enum {
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BRM_TOTAL_BATTERY_RATE_VOLTAGE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_MODE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_CONDITION); \
-	add_get_channel_item_enum_info_field_case(channel_id, enum_info, ACCOUNT_TYPE)
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, ACCOUNT_TYPE); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, PASSWORD_CONFIRM); \
+	add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, ACCOUNT); \
+	add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, PASSWORD)
 
 static void get_channel_item_enum_info(modbus_slave_addr_t addr, enum_info_t *enum_info)
 {
@@ -792,6 +834,25 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 		}
 		break;
 
+		case add_channel_item_field_type_case(PASSWORD_CONFIRM): {
+			modbus_data_value_r(modbus_data_ctx, 0);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channel_info->display_cache_channel.account_password_sync = 1;
+			}
+		}
+		break;
+
+		case add_channel_item_field_type_case(ACCOUNT): {
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->display_cache_channel.account, 16 * 2, modbus_data_ctx->addr - enum_info->buffer_start);
+		}
+		break;
+
+		case add_channel_item_field_type_case(PASSWORD): {
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->display_cache_channel.password, 16 * 2, modbus_data_ctx->addr - enum_info->buffer_start);
+		}
+		break;
+
 		default: {
 			modbus_data_value_r(modbus_data_ctx, 0xffff);
 		}
@@ -1051,7 +1112,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case add_modbus_data_get_set_item_case(REQUEST_POPUP_CLOSE): {
-			//todo ...
+			channels_info->display_cache_channels.popup_type = MODBUS_POPUP_TYPE_NONE;
 		}
 		break;
 
@@ -1244,6 +1305,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(POPUP_VALUE): {
 			modbus_data_value_r(modbus_data_ctx, channels_info->display_cache_channels.popup_value);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(CHANNELS_FAULT): {
+			modbus_data_value_r(modbus_data_ctx, get_first_fault(channels_info->faults));
 		}
 		break;
 
