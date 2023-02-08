@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月08日 星期三 15时29分52秒
+ *   修改日期：2023年02月08日 星期三 16时55分46秒
  *   描    述：
  *
  *================================================================*/
@@ -1305,6 +1305,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(POPUP_VALUE): {
 			modbus_data_value_r(modbus_data_ctx, channels_info->display_cache_channels.popup_value);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(CHANNEL_NUMBER): {
+			modbus_data_value_r(modbus_data_ctx, channels_info->channel_number);
 		}
 		break;
 
