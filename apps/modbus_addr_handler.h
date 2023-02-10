@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年02月08日 星期三 16时54分56秒
+ *   修改日期：2023年02月10日 星期五 16时06分13秒
  *   描    述：
  *
  *================================================================*/
@@ -243,7 +243,7 @@ typedef enum {
 	add_enum_modbus_item(CHANNEL_RECORD_YEAR),
 	add_enum_modbus_item(CHANNEL_RECORD_MONTH),
 	add_enum_modbus_item(CHANNEL_RECORD_DAY),
-	add_enum_modbus_item(CHANNEL_RECORD_REFRESH),
+	add_enum_modbus_item(CHANNEL_RECORD_JUMP),
 	add_enum_modbus_channel_record_status(0, 40100),
 	add_enum_modbus_channel_record_status(1, 40200),
 	add_enum_modbus_channel_record_status(2, 40300),
@@ -258,9 +258,16 @@ typedef enum {
 } modbus_slave_addr_t;
 
 typedef enum {
-	MODBUS_POPUP_TYPE_NONE = 0,
-	MODBUS_POPUP_TYPE_AUTH = 61,
-	MODBUS_POPUP_TYPE_PASSWORD,
+	MODBUS_POPUP_TYPE_NONE = 0,//无弹窗
+	MODBUS_POPUP_TYPE_AUTH_0 = 61,//授权结果
+	MODBUS_POPUP_TYPE_AUTH_1,
+	MODBUS_POPUP_TYPE_AUTH_2,
+	MODBUS_POPUP_TYPE_AUTH_3,
+	MODBUS_POPUP_TYPE_PASSWORD_0,//密码确认
+	MODBUS_POPUP_TYPE_PASSWORD_1,
+	MODBUS_POPUP_TYPE_PASSWORD_2,
+	MODBUS_POPUP_TYPE_PASSWORD_3,
+	MODBUS_POPUP_TYPE_SWIPE_CARD,//刷卡提示
 } modbus_popup_type_t;
 
 char *get_modbus_slave_addr_des(modbus_slave_addr_t addr);

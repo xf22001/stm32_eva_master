@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月08日 星期三 16时55分46秒
+ *   修改日期：2023年02月10日 星期五 16时07分08秒
  *   描    述：
  *
  *================================================================*/
@@ -835,11 +835,7 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 		break;
 
 		case add_channel_item_field_type_case(PASSWORD_CONFIRM): {
-			modbus_data_value_r(modbus_data_ctx, 0);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.account_password_sync = 1;
-			}
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.account_password_sync);
 		}
 		break;
 
@@ -1112,7 +1108,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case add_modbus_data_get_set_item_case(REQUEST_POPUP_CLOSE): {
-			channels_info->display_cache_channels.popup_type = MODBUS_POPUP_TYPE_NONE;
+			modbus_data_value_r(modbus_data_ctx, 0);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channels_info->display_cache_channels.popup_type = MODBUS_POPUP_TYPE_NONE;
+			}
 		}
 		break;
 
@@ -1358,26 +1358,26 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_YEAR): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.year);
-			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_MONTH): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.mon);
-			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
 		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_DAY): {
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_dt_cache.day);
-			channels_info->display_cache_channels.record_sync = 1;
 		}
 		break;
 
-		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_REFRESH): {
+		case add_modbus_data_get_set_item_case(CHANNEL_RECORD_JUMP): {
 			modbus_data_value_r(modbus_data_ctx, 0);
-			channels_info->display_cache_channels.record_load_cmd = 1;
-			channels_info->display_cache_channels.record_sync = 1;
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channels_info->display_cache_channels.record_sync = 1;
+				channels_info->display_cache_channels.record_load_cmd = modbus_data_ctx->value;
+			}
 		}
 		break;
 

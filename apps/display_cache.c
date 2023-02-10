@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年02月08日 星期三 15时24分04秒
+ *   修改日期：2023年02月10日 星期五 16时08分42秒
  *   描    述：
  *
  *================================================================*/
@@ -300,13 +300,15 @@ static void channels_notify_callback(void *fn_ctx, void *chain_ctx)
 {
 	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
 	channels_notify_ctx_t *channels_notify_ctx = (channels_notify_ctx_t *)chain_ctx;
-	account_response_info_t *account_response_info = (account_response_info_t *)channels_notify_ctx->ctx;
 
 	switch(channels_notify_ctx->notify) {
 		case CHANNELS_NOTIFY_CARD_VERIFY_RESULT:
 		case CHANNELS_NOTIFY_VIN_VERIFY_RESULT: {
+			account_response_info_t *account_response_info = (account_response_info_t *)channels_notify_ctx->ctx;
+			channel_info_t *channel_info = (channel_info_t *)account_response_info->channel_info;
+
 			if(account_response_info->code != ACCOUNT_STATE_CODE_OK) {
-				start_popup(channels_info, MODBUS_POPUP_TYPE_AUTH, account_response_info->code);
+				start_popup(channels_info, MODBUS_POPUP_TYPE_AUTH_0 + channel_info->channel_id, account_response_info->code);
 			}
 		}
 		break;
@@ -395,20 +397,42 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 
 		channels_info->display_cache_channels.record_sync = 0;
 
-		if(channels_info->display_cache_channels.record_load_cmd == 1) {
-			struct tm tm = {0};
-			uint8_t year_l = get_u8_l_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
-			uint8_t year_h = get_u8_h_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
+		switch(channels_info->display_cache_channels.record_load_cmd) {
+			case 0: {
+				channel_record_item_page_load_current(channel_record_task_info);
+			}
+			break;
 
-			channels_info->display_cache_channels.record_load_cmd = 0;
+			case 1: {
+				channel_record_item_page_load_prev(channel_record_task_info);
+			}
+			break;
 
-			tm.tm_year = get_u16_from_bcd_b01(year_l, year_h) - 1900;
-			tm.tm_mon = get_u8_from_bcd(channels_info->display_cache_channels.record_dt_cache.mon) - 1;
-			tm.tm_mday = get_u8_from_bcd(channels_info->display_cache_channels.record_dt_cache.day);
-			channel_record_task_info->page_load_time = mktime(&tm);
+			case 2: {
+				channel_record_item_page_load_next(channel_record_task_info);
+			}
+			break;
 
-			channel_record_item_page_load_location(channel_record_task_info);
+			case 3: {
+				struct tm tm = {0};
+				uint8_t year_l = get_u8_l_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
+				uint8_t year_h = get_u8_h_from_u16(channels_info->display_cache_channels.record_dt_cache.year);
+
+				tm.tm_year = get_u16_from_bcd_b01(year_l, year_h) - 1900;
+				tm.tm_mon = get_u8_from_bcd(channels_info->display_cache_channels.record_dt_cache.mon) - 1;
+				tm.tm_mday = get_u8_from_bcd(channels_info->display_cache_channels.record_dt_cache.day);
+				channel_record_task_info->page_load_time = mktime(&tm);
+
+				channel_record_item_page_load_location(channel_record_task_info);
+			}
+			break;
+
+			default: {
+			}
+			break;
 		}
+
+		channels_info->display_cache_channels.record_load_cmd = 0;
 	}
 
 	if(channels_info->display_cache_channels.module_sync == 1) {
@@ -493,7 +517,7 @@ static void account_request_cb(void *fn_ctx, void *chain_ctx)
 	}
 }
 
-static void password_confirm_cb_fn(channel_info_t *channel_info)
+static void password_confirm_cb_start_fn(channel_info_t *channel_info)
 {
 	channels_info_t *channels_info = channel_info->channels_info;
 	net_client_info_t *net_client_info = get_net_client_info();
@@ -529,7 +553,7 @@ static void password_confirm_cb_fn(channel_info_t *channel_info)
 }
 
 #if !defined(DISABLE_CARDREADER)
-static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
+static void card_reader_cb_start_fn(void *fn_ctx, void *chain_ctx)
 {
 	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
 	card_reader_data_t *card_reader_data = (card_reader_data_t *)chain_ctx;
@@ -538,13 +562,30 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 	if(card_reader_data != NULL) {
 		get_ascii_from_u64((char *)&channel_info->display_cache_channel.account[0], sizeof(channel_info->display_cache_channel.account), card_reader_data->id);
 		channel_info->display_cache_channel.alive_stamps = osKernelSysTick();
-		start_popup(channels_info, MODBUS_POPUP_TYPE_PASSWORD, 0);
+		start_popup(channels_info, MODBUS_POPUP_TYPE_PASSWORD_0 + channel_info->channel_id, 1);
 	} else {
 		account_response_info_t account_response_info = {0};
 		account_response_info.channel_info = channel_info;
 		account_response_info.code = ACCOUNT_STATE_CODE_GET_CARD_TIMEOUT;
 		account_response_info.balance = 0;
 		account_request_cb(channels_info, &account_response_info);
+	}
+}
+
+static void card_reader_cb_stop_fn(void *fn_ctx, void *chain_ctx)
+{
+	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
+	card_reader_data_t *card_reader_data = (card_reader_data_t *)chain_ctx;
+	channels_info_t *channels_info = channel_info->channels_info;
+
+	if(card_reader_data != NULL) {
+		char account[32];
+		get_ascii_from_u64((char *)&account[0], sizeof(account), card_reader_data->id);
+
+		if(strncmp(account, (char *)&channel_info->channel_record_item.account[0], 32) == 0) {
+			channel_info->display_cache_channel.alive_stamps = osKernelSysTick();
+			start_popup(channels_info, MODBUS_POPUP_TYPE_PASSWORD_0 + channel_info->channel_id, 2);
+		}
 	}
 }
 #endif
@@ -605,20 +646,34 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 			}
 
 			if(channels_settings->authorize != 0) {
-				if(channel_info->display_cache_channel.account_type == ACCOUNT_TYPE_CARD) {
+				switch(channel_info->display_cache_channel.account_type) {
+					case ACCOUNT_TYPE_CARD: {
 #if !defined(DISABLE_CARDREADER)
-					card_reader_cb_t card_reader_cb;
-					card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
-					channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
-					card_reader_cb.fn = card_reader_cb_fn;
-					card_reader_cb.fn_ctx = channel_info;
-					card_reader_cb.timeout = 5000;
-					start_card_reader_cb(card_reader_info, &card_reader_cb);
+						card_reader_cb_t card_reader_cb;
+						card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+						channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
+						card_reader_cb.fn = card_reader_cb_start_fn;
+						card_reader_cb.fn_ctx = channel_info;
+						card_reader_cb.timeout = 5000;
+
+						if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
+							start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, 0);
+						}
+
 #endif
-				} else if(channel_info->display_cache_channel.account_type == ACCOUNT_TYPE_VIN) {
-					channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(VIN);
-					display_start_channel(channel_info);
-				} else {
+					}
+					break;
+
+					case ACCOUNT_TYPE_VIN: {
+						channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(VIN);
+						channel_info->channel_event_start_display.account_balance = 5;
+						display_start_channel(channel_info);
+					}
+					break;
+
+					default: {
+					}
+					break;
 				}
 			} else {
 				channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(MANUAL);
@@ -626,14 +681,54 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				display_start_channel(channel_info);
 			}
 
-		} else {//关机
-			channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
+		} else if(channel_info->display_cache_channel.onoff == 0) { //关机
+			if(channels_settings->authorize != 0) {
+				switch(channel_info->channel_record_item.start_reason) {
+					case channel_record_item_start_reason(CARD): {
+						if(channels_settings->authorize_stop == 1) {
+#if !defined(DISABLE_CARDREADER)
+							card_reader_cb_t card_reader_cb;
+							card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+							channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
+							card_reader_cb.fn = card_reader_cb_stop_fn;
+							card_reader_cb.fn_ctx = channel_info;
+							card_reader_cb.timeout = 5000;
+
+							if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
+								start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, 0);
+							}
+
+#endif
+						} else {
+							channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
+						}
+					}
+					break;
+
+					default: {
+						channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
+					}
+					break;
+				}
+			} else {
+				channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
+			}
 		}
 	}
 
 	if(channel_info->display_cache_channel.account_password_sync == 1) {
 		channel_info->display_cache_channel.account_password_sync = 0;
-		password_confirm_cb_fn(channel_info);
+		password_confirm_cb_start_fn(channel_info);
+	} else if(channel_info->display_cache_channel.account_password_sync == 2) {
+		channel_info->display_cache_channel.account_password_sync = 0;
+
+		if(ticks_duration(channel_info->display_cache_channel.alive_stamps, osKernelSysTick()) <= 60000) {
+			if(strncmp((char *)&channel_info->display_cache_channel.password[0],
+			           (char *)&channel_info->channel_record_item.password[0],
+			           32) == 0) {
+				channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
+			}
+		}
 	}
 }
 
