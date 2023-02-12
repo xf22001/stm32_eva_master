@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年02月10日 星期五 16时08分42秒
+ *   修改日期：2023年02月12日 星期日 08时57分35秒
  *   描    述：
  *
  *================================================================*/
@@ -470,24 +470,7 @@ void load_channel_display_cache(channel_info_t *channel_info)
 
 static void display_start_channel(channel_info_t *channel_info)
 {
-	channels_info_t *channels_info = channel_info->channels_info;
-	channel_event_t *channel_event;
-	channels_event_t *channels_event;
-	channel_event = os_calloc(1, sizeof(channel_event_t));
-	channels_event = os_calloc(1, sizeof(channels_event_t));
-
-	OS_ASSERT(channel_event != NULL);
-	OS_ASSERT(channels_event != NULL);
-
-	channel_event->channel_id = channel_info->channel_id;
-	channel_event->type = CHANNEL_EVENT_TYPE_START_CHANNEL;
-	channel_event->ctx = &channel_info->channel_event_start_display;
-
-	channels_event->type = CHANNELS_EVENT_CHANNEL;
-	channels_event->event = channel_event;
-
-	if(send_channels_event(channels_info, channels_event, 100) != 0) {
-	}
+	channel_request_start(channel_info, &channel_info->channel_event_start_display);
 }
 
 static void account_request_cb(void *fn_ctx, void *chain_ctx)

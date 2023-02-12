@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2022年11月05日 星期六 10时47分03秒
+ *   修改日期：2023年02月12日 星期日 08时55分01秒
  *   描    述：
  *
  *================================================================*/
@@ -503,44 +503,25 @@ static void fn14(request_t *request)
 	debug("ret:%d", ret);
 
 	if(ret == 3) {
-		channel_event_t *channel_event = os_calloc(1, sizeof(channel_event_t));
-		channels_event_t *channels_event = os_calloc(1, sizeof(channels_event_t));
 		channels_info_t *channels_info = get_channels();
 		channel_info_t *channel_info = channels_info->channel_info + channel_id;
-
-		OS_ASSERT(channel_event != NULL);
-		OS_ASSERT(channels_event != NULL);
 
 		switch(type) {
 			case CHANNEL_EVENT_TYPE_START_CHANNEL: {
 				channel_info->channel_event_start_bms.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
 				channel_info->channel_event_start_bms.start_reason = channel_record_item_start_reason(BMS);
+				channel_request_start(channel_info, &channel_info->channel_event_start_bms);
 			}
 			break;
 
 			case CHANNEL_EVENT_TYPE_STOP_CHANNEL: {
-				channel_info->channel_event_stop.stop_reason = channel_record_item_stop_reason(MANUAL);
+				channel_request_stop(channel_info, channel_record_item_stop_reason(MANUAL));
 			}
 			break;
 
 			default: {
 			}
 			break;
-		}
-
-		channel_event->channel_id = channel_id;
-		channel_event->type = type;
-		channel_event->ctx = &channel_info->channel_event_start_bms;
-
-		channels_event->type = CHANNELS_EVENT_CHANNEL;
-		channels_event->event = channel_event;
-
-		if(send_channels_event(channels_info, channels_event, 100) != 0) {
-			os_free(channels_event->event);
-			os_free(channels_event);
-			debug("send channel %d type %d failed!", channel_id, type);
-		} else {
-			debug("send channel %d type %d successful!", channel_id, type);
 		}
 	}
 }
@@ -665,6 +646,7 @@ static void fn18(request_t *request)
 	} else {
 		_hexdumpf(content, request->header.data_size, "%s", __func__);
 	}
+
 #endif
 }
 
