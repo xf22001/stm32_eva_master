@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年02月10日 星期五 16时06分13秒
+ *   修改日期：2023年02月15日 星期三 15时47分03秒
  *   描    述：
  *
  *================================================================*/
@@ -93,6 +93,7 @@ extern "C"
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##BRM_TOTAL_BATTERY_RATE_VOLTAGE), \
 	add_enum_modbus_item_with_base(CHANNEL_##channel_id##_ITEM_##CHARGE_MODE, (base + 90)), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_CONDITION), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_CONDITION_EXT), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##ACCOUNT_TYPE), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##PASSWORD_CONFIRM), \
 	add_enum_modbus_buffer_with_base(CHANNEL_##channel_id##_ITEM_##ACCOUNT, 10, (base + 900)), \

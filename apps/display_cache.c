@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年02月12日 星期日 08时57分35秒
+ *   修改日期：2023年02月17日 星期五 12时58分01秒
  *   描    述：
  *
  *================================================================*/
@@ -605,19 +605,42 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 
 			switch(channel_info->display_cache_channel.charge_mode) {
 				case CHANNEL_RECORD_CHARGE_MODE_DURATION: {
-					channel_info->channel_event_start_display.charge_condition = get_u32_from_u16_01(channel_info->display_cache_channel.charge_condition_l, channel_info->display_cache_channel.charge_condition_h) * 60;
-					channel_info->channel_event_start_display.start_time = start_ts;
+					uint8_t hour = get_u8_from_bcd(get_u8_h_from_u16(channel_info->display_cache_channel.charge_condition_ext));
+					uint8_t min = get_u8_from_bcd(get_u8_l_from_u16(channel_info->display_cache_channel.charge_condition_ext));
+
+					channel_info->channel_event_start_display.charge_condition = channel_info->display_cache_channel.charge_condition * 60;
+
+					if(hour == 24) {
+						channel_info->channel_event_start_display.start_time = start_ts;
+					} else {
+						struct tm tm;
+						struct tm *now = localtime(&start_ts);
+						tm = *now;
+						tm.tm_hour = hour;
+						tm.tm_min = min;
+						channel_info->channel_event_start_display.start_time = mktime(&tm);
+
+						if(channel_info->channel_event_start_display.start_time < start_ts) {
+							channel_info->channel_event_start_display.start_time += 86400;
+						}
+					}
 				}
 				break;
 
 				case CHANNEL_RECORD_CHARGE_MODE_AMOUNT: {
-					channel_info->channel_event_start_display.charge_condition = get_u32_from_u16_01(channel_info->display_cache_channel.charge_condition_l, channel_info->display_cache_channel.charge_condition_h) * get_value_accuracy_base(VALUE_ACCURACY_2, VALUE_ACCURACY_2);
+					channel_info->channel_event_start_display.charge_condition = channel_info->display_cache_channel.charge_condition * get_value_accuracy_base(VALUE_ACCURACY_2, VALUE_ACCURACY_2);
 					channel_info->channel_event_start_display.start_time = start_ts;
 				}
 				break;
 
 				case CHANNEL_RECORD_CHARGE_MODE_ENERGY: {
-					channel_info->channel_event_start_display.charge_condition = get_u32_from_u16_01(channel_info->display_cache_channel.charge_condition_l, channel_info->display_cache_channel.charge_condition_h) * get_value_accuracy_base(VALUE_ACCURACY_0, VALUE_ACCURACY_4);
+					channel_info->channel_event_start_display.charge_condition = channel_info->display_cache_channel.charge_condition * get_value_accuracy_base(VALUE_ACCURACY_0, VALUE_ACCURACY_4);
+					channel_info->channel_event_start_display.start_time = start_ts;
+				}
+				break;
+
+				case CHANNEL_RECORD_CHARGE_MODE_SOC: {
+					channel_info->channel_event_start_display.charge_condition = channel_info->display_cache_channel.charge_condition * get_value_accuracy_base(VALUE_ACCURACY_0, VALUE_ACCURACY_4);
 					channel_info->channel_event_start_display.start_time = start_ts;
 				}
 				break;
@@ -640,7 +663,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 						card_reader_cb.timeout = 5000;
 
 						if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
-							start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, 0);
+							start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
 						}
 
 #endif
@@ -678,7 +701,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 							card_reader_cb.timeout = 5000;
 
 							if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
-								start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, 0);
+								start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
 							}
 
 #endif

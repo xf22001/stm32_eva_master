@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月10日 星期五 16时07分08秒
+ *   修改日期：2023年02月15日 星期三 15时53分11秒
  *   描    述：
  *
  *================================================================*/
@@ -420,6 +420,7 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, BRM_TOTAL_BATTERY_RATE_VOLTAGE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_MODE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_CONDITION): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_CONDITION_EXT): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, ACCOUNT_TYPE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, PASSWORD_CONFIRM): \
 	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, ACCOUNT): \
@@ -461,6 +462,7 @@ typedef enum {
 	add_channel_item_field_type_case(BRM_TOTAL_BATTERY_RATE_VOLTAGE),
 	add_channel_item_field_type_case(CHARGE_MODE),
 	add_channel_item_field_type_case(CHARGE_CONDITION),
+	add_channel_item_field_type_case(CHARGE_CONDITION_EXT),
 	add_channel_item_field_type_case(ACCOUNT_TYPE),
 	add_channel_item_field_type_case(PASSWORD_CONFIRM),
 	add_channel_item_field_type_case(ACCOUNT),
@@ -537,6 +539,7 @@ typedef enum {
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, BRM_TOTAL_BATTERY_RATE_VOLTAGE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_MODE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_CONDITION); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_CONDITION_EXT); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, ACCOUNT_TYPE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, PASSWORD_CONFIRM); \
 	add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, ACCOUNT); \
@@ -825,7 +828,12 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 		break;
 
 		case add_channel_item_field_type_case(CHARGE_CONDITION): {
-			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_condition_l);
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_condition);
+		}
+		break;
+
+		case add_channel_item_field_type_case(CHARGE_CONDITION_EXT): {
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_condition_ext);
 		}
 		break;
 
