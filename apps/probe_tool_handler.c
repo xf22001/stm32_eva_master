@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2023年02月12日 星期日 08时55分01秒
+ *   修改日期：2023年02月21日 星期二 11时36分57秒
  *   描    述：
  *
  *================================================================*/
@@ -40,10 +40,10 @@ static void fn1(request_t *request)
 	probe_server_chunk_sendto(request->payload.fn, (void *)0x8000000, 512);
 }
 
-#include "test_event.h"
+//#include "test_event.h"
 static void fn2(request_t *request)
 {
-	try_get_test_event();
+	//try_get_test_event();
 }
 
 static void fn3(request_t *request)
@@ -308,7 +308,7 @@ static void fn6(request_t *request)
 	set_client_state(net_client_info, CLIENT_REINIT);
 }
 
-#include "test_storage.h"
+//#include "test_storage.h"
 static void fn7(request_t *request)
 {
 	char *content = (char *)(request + 1);
@@ -328,17 +328,17 @@ static void fn7(request_t *request)
 
 		switch(op) {
 			case 0: {
-				test_storage_check(app_info->storage_info, start, size);
+				//test_storage_check(app_info->storage_info, start, size);
 			}
 			break;
 
 			case 1: {
-				test_storage_read(app_info->storage_info, start, size);
+				//test_storage_read(app_info->storage_info, start, size);
 			}
 			break;
 
 			case 2: {
-				test_storage_write(app_info->storage_info, start, size);
+				//test_storage_write(app_info->storage_info, start, size);
 			}
 			break;
 

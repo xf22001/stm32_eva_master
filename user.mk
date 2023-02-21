@@ -29,7 +29,7 @@ USER_C_INCLUDES += -Iapps/modules/app/ftpd
 endif
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/app/net_client
-USER_C_INCLUDES += -Iapps/modules/tests
+#USER_C_INCLUDES += -Iapps/modules/tests
 USER_C_INCLUDES += -IcJSON
 ifneq ($(call ifdef_any_of,ENABLE_CXX),)
 USER_CPP_INCLUDES += -Iapps/modules/os/cxx
@@ -62,7 +62,7 @@ USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/request.c
 USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
-ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
+ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/file_log.c
 endif
 USER_C_SOURCES += apps/modules/app/net_client/net_client.c
@@ -90,7 +90,7 @@ endif
 USER_C_SOURCES += apps/modules/app/ftp_client.c
 USER_C_SOURCES += apps/modules/app/ntp_client.c
 USER_C_SOURCES += apps/modules/app/net_callback.c
-ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
+ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/ftpd/ftpd.c
 #USER_C_SOURCES += apps/modules/app/vfs_disk/pseudo_disk_io.c
 #USER_C_INCLUDES += -Iapps/modules/app/ftpd/vfs_ramdisk
@@ -101,7 +101,7 @@ endif
 USER_C_SOURCES += apps/modules/app/can_data_task.c
 USER_C_SOURCES += apps/modules/app/uart_data_task.c
 USER_C_SOURCES += apps/modules/app/duty_cycle_pattern.c
-ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
+ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/usbh_user_callback.c
 endif
 USER_C_SOURCES += apps/modules/app/early_sys_callback.c
@@ -109,7 +109,7 @@ USER_C_SOURCES += apps/modules/app/connect_state.c
 USER_C_SOURCES += apps/modules/app/ntc_temperature.c
 USER_C_SOURCES += apps/modules/app/pt_temperature.c
 USER_C_SOURCES += apps/modules/app/can_command.c
-ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
+ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/usb_upgrade.c
 endif
 USER_C_SOURCES += apps/modules/app/firmware_upgrade_internal_flash.c
@@ -210,19 +210,46 @@ endif
 ifneq ($(call ifdef_any_of,CHARGER_BMS_HANDLER_NOBMS),)
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_nobms.c
 endif
+ifneq ($(call ifdef_any_of,ENERGY_METER),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_DC),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_dc.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_AC),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_AC_HLW8032),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_hlw8032.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_AC_SDM_220),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_220.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_AC_SDM_630),)
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_630.c
+endif
+ifneq ($(call ifdef_any_of,ENERGY_METER_DCM3366D_J_G),)
+USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_dcm3366d_j_g.c
+endif
 USER_C_SOURCES += apps/modules/app/charger/channel_record.c
 ifeq ($(call ifdef_any_of,DISABLE_CARDREADER),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader.c
+ifneq ($(call ifdef_any_of,CARD_READER_HANDLER_PSEUDO),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_pseudo.c
+endif
+ifneq ($(call ifdef_any_of,CARD_READER_HANDLER_ZLG),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
+endif
+ifneq ($(call ifdef_any_of,CARD_READER_HANDLER_MT_318_626),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_626.c
+endif
+ifneq ($(call ifdef_any_of,CARD_READER_HANDLER_MT_318_628),)
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_628.c
+endif
+endif
+ifneq ($(call ifdef_any_of,FAN_CONTROL),)
+USER_C_SOURCES += apps/modules/app/charger/fan_control.c
+USER_C_SOURCES += apps/modules/app/charger/fan_control_handler_stc12.c
 endif
 ifneq ($(call ifdef_any_of,CHARGER_CHANNEL_PROXY_REMOTE),)
 USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_remote.c
@@ -237,14 +264,23 @@ USER_C_SOURCES += apps/modules/hardware/modbus_slave_txrx.c
 USER_C_SOURCES += apps/modules/hardware/modbus_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/modbus_spec.c
 USER_C_SOURCES += apps/modules/hardware/storage.c
-ifneq ($(call ifdef_any_of,STORAGE_OPS_25LC1024),)
-USER_C_SOURCES += apps/modules/hardware/storage_25lc1024.c
-endif
 ifneq ($(call ifdef_any_of,STORAGE_OPS_24LC128),)
 USER_C_SOURCES += apps/modules/hardware/storage_24lc128.c
 endif
+ifneq ($(call ifdef_any_of,STORAGE_OPS_AT24C512),)
+USER_C_SOURCES += apps/modules/hardware/storage_at24c512.c
+endif
+ifneq ($(call ifdef_any_of,STORAGE_OPS_25LC1024),)
+USER_C_SOURCES += apps/modules/hardware/storage_25lc1024.c
+endif
+ifneq ($(call ifdef_any_of,STORAGE_OPS_W25Q32),)
+USER_C_SOURCES += apps/modules/hardware/storage_w25q32.c
+endif
 ifneq ($(call ifdef_any_of,STORAGE_OPS_W25Q256),)
 USER_C_SOURCES += apps/modules/hardware/storage_w25q256.c
+endif
+ifneq ($(call ifdef_any_of,STORAGE_OPS_USBDISK),)
+USER_C_SOURCES += apps/modules/hardware/storage_usbdisk.c
 endif
 USER_C_SOURCES += apps/modules/drivers/spi_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_txrx.c
@@ -264,9 +300,10 @@ USER_C_SOURCES += apps/modules/os/syscalls.c
 ifneq ($(call ifdef_any_of,ENABLE_CXX),)
 USER_CPP_SOURCES += apps/modules/os/cxx/override.cpp
 endif
-USER_C_SOURCES += apps/modules/tests/test_serial.c
-USER_C_SOURCES += apps/modules/tests/test_event.c
-USER_C_SOURCES += apps/modules/tests/test_storage.c
+#USER_C_SOURCES += apps/modules/tests/test_serial.c
+#USER_C_SOURCES += apps/modules/tests/test_event.c
+#USER_C_SOURCES += apps/modules/tests/test_storage.c
+#USER_C_SOURCES += apps/modules/tests/test_can.c
 USER_C_SOURCES += cJSON/cJSON.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
