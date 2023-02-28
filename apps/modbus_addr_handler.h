@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年02月15日 星期三 15时47分03秒
+ *   修改日期：2023年02月28日 星期二 15时18分03秒
  *   描    述：
  *
  *================================================================*/
@@ -132,6 +132,8 @@ typedef enum {
 	add_enum_modbus_item(POWER_MODULE_TYPE),
 	add_enum_modbus_item(HUAWEI_REFERENCE_CURRENT),
 	add_enum_modbus_item(REQUEST_POPUP_CLOSE),
+	add_enum_modbus_buffer(SYS_TIME, 6),
+	add_enum_modbus_item(TIME_SYNC),
 
 	add_enum_modbus_item_with_base(CARD_READER_TYPE, 1350),
 	add_enum_modbus_item_with_base(MODULE_MAX_OUTPUT_VOLTAGE, 1400),
@@ -231,6 +233,9 @@ typedef enum {
 	add_enum_modbus_item_with_base(POPUP_TYPE, 20301),
 	add_enum_modbus_item(POPUP_VALUE),
 	add_enum_modbus_item(CHANNEL_NUMBER),
+	add_enum_modbus_item(VER_MAJOR),
+	add_enum_modbus_item(VER_MINOR),
+	add_enum_modbus_item(VER_REV),
 
 	add_enum_modbus_item_with_base(CHANNELS_FAULT, 20401),
 

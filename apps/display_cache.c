@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年02月17日 星期五 12时58分01秒
+ *   修改日期：2023年02月28日 星期二 15时12分25秒
  *   描    述：
  *
  *================================================================*/
@@ -22,56 +22,6 @@
 #include "modbus_addr_handler.h"
 
 #include "log.h"
-
-static void load_device_id(uint16_t *id, uint16_t *cache, uint16_t size)
-{
-	u_uint16_bytes_t *u_uint16_bytes_id = (u_uint16_bytes_t *)id;
-	u_uint16_bytes_t *u_uint16_bytes_cache = (u_uint16_bytes_t *)cache;
-	int i;
-
-	for(i = 0; i < size; i++) {
-		uint8_t byte0 = u_uint16_bytes_id->s.byte0;
-		uint8_t byte1 = u_uint16_bytes_id->s.byte1;
-
-		if(byte0 == 0) {
-			byte0 = 0xff;
-		}
-
-		if(byte1 == 0) {
-			byte1 = 0xff;
-		}
-
-		u_uint16_bytes_cache->s.byte0 = byte1;
-		u_uint16_bytes_cache->s.byte1 = byte0;
-		u_uint16_bytes_id++;
-		u_uint16_bytes_cache++;
-	}
-}
-
-static void set_device_id(uint16_t *id, uint16_t *cache, uint16_t size)
-{
-	u_uint16_bytes_t *u_uint16_bytes_id = (u_uint16_bytes_t *)id;
-	u_uint16_bytes_t *u_uint16_bytes_cache = (u_uint16_bytes_t *)cache;
-	int i;
-
-	for(i = 0; i < size; i++) {
-		uint8_t byte0 = u_uint16_bytes_cache->s.byte0;
-		uint8_t byte1 = u_uint16_bytes_cache->s.byte1;
-
-		if(byte0 == 0xff) {
-			byte0 = 0;
-		}
-
-		if(byte1 == 0xff) {
-			byte1 = 0;
-		}
-
-		u_uint16_bytes_id->s.byte0 = byte1;
-		u_uint16_bytes_id->s.byte1 = byte0;
-		u_uint16_bytes_id++;
-		u_uint16_bytes_cache++;
-	}
-}
 
 void load_app_display_cache(app_info_t *app_info)
 {
@@ -98,41 +48,15 @@ void load_app_display_cache(app_info_t *app_info)
 	}
 
 	{
-		int d0;
-		int d1;
-		int d2;
-		int d3;
-		int port;
-		int ret = sscanf(app_info->mechine_info.uri, "tcp://%d.%d.%d.%d:%d",
-		                 &d0,
-		                 &d1,
-		                 &d2,
-		                 &d3,
-		                 &port);
-
-		if(ret == 5) {
-			app_info->display_cache_app.ip[0] = d0;
-			app_info->display_cache_app.ip[1] = d1;
-			app_info->display_cache_app.ip[2] = d2;
-			app_info->display_cache_app.ip[3] = d3;
-			app_info->display_cache_app.ip[4] = port;
-		}
-	}
-
-	load_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
-
-	{
 		time_t ts = get_time();
 		struct tm tm = *localtime(&ts);
-		u_uint16_bytes_t u_uint16_bytes;
 
-		app_info->display_cache_app.set_time[0] = get_bcd_from_u8(tm.tm_sec);
-		app_info->display_cache_app.set_time[1] = get_bcd_from_u8(tm.tm_min);
-		app_info->display_cache_app.set_time[2] = get_bcd_from_u8(tm.tm_hour);
-		app_info->display_cache_app.set_time[3] = get_bcd_from_u8(tm.tm_mday);
-		app_info->display_cache_app.set_time[4] = get_bcd_from_u8(tm.tm_mon + 1);
-		u_uint16_bytes.v = tm.tm_year + 1900;
-		app_info->display_cache_app.set_time[5] = get_u16_from_u8_lh(get_bcd_from_u8(u_uint16_bytes.s.byte0), get_bcd_from_u8(u_uint16_bytes.s.byte1));
+		app_info->display_cache_app.sys_time[0] = tm.tm_sec;
+		app_info->display_cache_app.sys_time[1] = tm.tm_min;
+		app_info->display_cache_app.sys_time[2] = tm.tm_hour;
+		app_info->display_cache_app.sys_time[3] = tm.tm_mday;
+		app_info->display_cache_app.sys_time[4] = tm.tm_mon + 1;
+		app_info->display_cache_app.sys_time[5] = tm.tm_year + 1900;
 	}
 
 }
@@ -173,45 +97,47 @@ void sync_app_display_cache(app_info_t *app_info)
 		}
 	}
 
-	if(app_info->display_cache_app.ip_sync != 0) {
-		app_info->display_cache_app.ip_sync = 0;
+	if(app_info->display_cache_app.sys_time_sync != 0) {
+		app_info->display_cache_app.sys_time_sync = 0;
 
-		snprintf(app_info->mechine_info.uri, 256, "tcp://%d.%d.%d.%d:%d",
-		         app_info->display_cache_app.ip[0],
-		         app_info->display_cache_app.ip[1],
-		         app_info->display_cache_app.ip[2],
-		         app_info->display_cache_app.ip[3],
-		         app_info->display_cache_app.ip[4]);
-		app_info->mechine_info_invalid = 1;
-	}
+		switch(app_info->display_cache_app.time_sync) {
+			case 0: {
+				time_t ts = get_time();
+				struct tm tm = *localtime(&ts);
 
-	if(app_info->display_cache_app.device_id_sync != 0) {
-		app_info->display_cache_app.device_id_sync = 0;
-		set_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
+				app_info->display_cache_app.sys_time[0] = tm.tm_sec;
+				app_info->display_cache_app.sys_time[1] = tm.tm_min;
+				app_info->display_cache_app.sys_time[2] = tm.tm_hour;
+				app_info->display_cache_app.sys_time[3] = tm.tm_mday;
+				app_info->display_cache_app.sys_time[4] = tm.tm_mon + 1;
+				app_info->display_cache_app.sys_time[5] = tm.tm_year + 1900;
+			}
+			break;
 
-		app_info->mechine_info_invalid = 1;
-	}
+			case 1: {
+				time_t ts;
+				struct tm tm = {0};
 
-	if(app_info->display_cache_app.set_time_sync != 0) {
-		time_t ts;
-		struct tm tm = {0};
-		u_uint16_bytes_t u_uint16_bytes;
+				tm.tm_sec = app_info->display_cache_app.sys_time[0];
+				tm.tm_min = app_info->display_cache_app.sys_time[1];
+				tm.tm_hour = app_info->display_cache_app.sys_time[2];
+				tm.tm_mday = app_info->display_cache_app.sys_time[3];
+				tm.tm_mon = app_info->display_cache_app.sys_time[4] - 1;
+				tm.tm_year = app_info->display_cache_app.sys_time[5] - 1900;
+				ts = mktime(&tm);
 
-		app_info->display_cache_app.set_time_sync = 0;
+				if(set_time(ts) == 0) {
+					debug("set time successful!");
+				} else {
+					debug("set time failed!");
+				}
 
-		tm.tm_sec = get_u8_from_bcd(app_info->display_cache_app.set_time[0]);
-		tm.tm_min = get_u8_from_bcd(app_info->display_cache_app.set_time[1]);
-		tm.tm_hour = get_u8_from_bcd(app_info->display_cache_app.set_time[2]);
-		tm.tm_mday = get_u8_from_bcd(app_info->display_cache_app.set_time[3]);
-		tm.tm_mon = get_u8_from_bcd(app_info->display_cache_app.set_time[4]) - 1;
-		u_uint16_bytes.v = app_info->display_cache_app.set_time[5];
-		tm.tm_year = get_u16_from_u8_lh(get_u8_from_bcd(u_uint16_bytes.s.byte0), get_u8_from_bcd(u_uint16_bytes.s.byte1)) - 1900;
-		ts = mktime(&tm);
+			}
+			break;
 
-		if(set_time(ts) == 0) {
-			debug("set time successful!");
-		} else {
-			debug("set time failed!");
+			default: {
+			}
+			break;
 		}
 	}
 }
