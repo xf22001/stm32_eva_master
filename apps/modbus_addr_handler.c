@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月28日 星期二 15时19分43秒
+ *   修改日期：2023年02月28日 星期二 15时46分40秒
  *   描    述：
  *
  *================================================================*/
@@ -19,6 +19,9 @@
 #include "app.h"
 #include "channel.h"
 #include "power_manager.h"
+#if !defined(DISABLE_CARDREADER)
+#include "card_reader.h"
+#endif
 
 #define LOG_DISABLE
 #include "log.h"
@@ -1119,6 +1122,18 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			modbus_data_value_r(modbus_data_ctx, 0);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				switch(channels_info->display_cache_channels.popup_type) {
+					case MODBUS_POPUP_TYPE_SWIPE_CARD: {
+						card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+						stop_card_reader(card_reader_info);
+					}
+					break;
+
+					default: {
+					}
+					break;
+				}
+
 				channels_info->display_cache_channels.popup_type = MODBUS_POPUP_TYPE_NONE;
 			}
 		}
