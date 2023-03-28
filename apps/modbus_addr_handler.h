@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年02月28日 星期二 15时18分03秒
+ *   修改日期：2023年03月07日 星期二 09时02分31秒
  *   描    述：
  *
  *================================================================*/
@@ -233,6 +233,7 @@ typedef enum {
 	add_enum_modbus_item_with_base(POPUP_TYPE, 20301),
 	add_enum_modbus_item(POPUP_VALUE),
 	add_enum_modbus_item(CHANNEL_NUMBER),
+	add_enum_modbus_item(POWER_MOUDLE_NUMBER),
 	add_enum_modbus_item(VER_MAJOR),
 	add_enum_modbus_item(VER_MINOR),
 	add_enum_modbus_item(VER_REV),

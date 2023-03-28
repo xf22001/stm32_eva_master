@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年02月28日 星期二 15时46分40秒
+ *   修改日期：2023年03月20日 星期一 11时17分34秒
  *   描    述：
  *
  *================================================================*/
@@ -590,10 +590,12 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 
 		case add_channel_item_field_type_case(CHARGE_ENERGY): {
 			if(channel_info->state == CHANNEL_STATE_CHARGING) {
+				uint32_t energy = channel_info->channel_record_item.energy * get_value_accuracy_base(VALUE_ACCURACY_4, VALUE_ACCURACY_3);
+
 				if(enum_info->offset == 0) {
-					modbus_data_value_r(modbus_data_ctx, get_u16_0_from_u32(channel_info->channel_record_item.energy));
+					modbus_data_value_r(modbus_data_ctx, get_u16_0_from_u32(energy));
 				} else if(enum_info->offset == 1) {
-					modbus_data_value_r(modbus_data_ctx, get_u16_1_from_u32(channel_info->channel_record_item.energy));
+					modbus_data_value_r(modbus_data_ctx, get_u16_1_from_u32(energy));
 				} else {
 					modbus_data_value_r(modbus_data_ctx, 0);
 				}
@@ -1348,6 +1350,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case add_modbus_data_get_set_item_case(CHANNEL_NUMBER): {
 			modbus_data_value_r(modbus_data_ctx, channels_info->channel_number);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(POWER_MOUDLE_NUMBER): {
+			modbus_data_value_r(modbus_data_ctx, channels_info->power_module_number);
 		}
 		break;
 
