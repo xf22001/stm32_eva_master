@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2023年02月21日 星期二 11时36分57秒
+ *   修改日期：2023年04月06日 星期四 10时16分14秒
  *   描    述：
  *
  *================================================================*/
@@ -25,6 +25,7 @@
 #include "channels.h"
 #include "channel.h"
 #include "card_reader.h"
+#include "energy_meter.h"
 #if !defined(DISABLE_POWER_MANAGER)
 #include "power_manager.h"
 #endif
@@ -728,6 +729,48 @@ static void fn20(request_t *request)
 	}
 }
 
+static void channel_set_v2g_mode(channel_info_t *channel_info, v2g_mode_t v2g_mode)
+{
+	if(channel_info->state != CHANNEL_STATE_IDLE) {
+		debug("");
+		return;
+	}
+
+	channel_info->v2g_mode = v2g_mode;
+
+	if(v2g_mode == V2G_MODE_NORMAL) {
+		set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_DC);
+	} else {
+		set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_PROXY);
+	}
+
+	debug("set channel %d v2g_mode:%d!", channel_info->channel_id, v2g_mode);
+}
+
+//21 0 0
+static void fn21(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int channel_id;
+	int v2g_mode;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %d %n",
+	             &fn,
+	             &channel_id,
+	             &v2g_mode,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 3) {
+		channels_info_t *channels_info = get_channels();
+		channel_info_t *channel_info = channels_info->channel_info + channel_id;
+
+		channel_set_v2g_mode(channel_info, v2g_mode);
+	}
+}
 
 static server_item_t server_map[] = {
 	{1, fn1},
@@ -752,6 +795,7 @@ static server_item_t server_map[] = {
 	{18, fn18},
 	{19, fn19},
 	{20, fn20},
+	{21, fn21},
 };
 
 server_map_info_t server_map_info = {

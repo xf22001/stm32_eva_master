@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2023年04月06日 星期四 08时53分04秒
+ *   修改日期：2023年04月06日 星期四 09时54分11秒
  *   描    述：
  *
  *================================================================*/
@@ -31,6 +31,11 @@ static energy_meter_config_item_t energy_meter_config_item_0_0 = {
 	.huart = &huart3,
 };
 
+static energy_meter_config_item_t energy_meter_config_item_0_1 = {
+	.type = ENERGY_METER_TYPE_PROXY,
+	.huart = &huart3,
+};
+
 static energy_meter_config_item_t *energy_meter_config_item_0_sz[] = {
 	&energy_meter_config_item_0_0,
 };
@@ -47,7 +52,7 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB_V2G,
 		.hcan_bms = &hcan2,
 		.output_relay_gpio_p = run_a_GPIO_Port,
 		.output_relay_pin_p = run_a_Pin,
@@ -107,7 +112,7 @@ static channel_config_t channel1_config = {
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
-	&channel1_config,
+	//&channel1_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {
@@ -130,7 +135,7 @@ static channels_config_t channels_config_0 = {
 	.channel_config = channel_config_sz,
 	.power_module_config = {
 		.hcan = &hcan1,
-		.power_module_default_type = POWER_MODULE_TYPE_WINLINE,
+		.power_module_default_type = POWER_MODULE_TYPE_INFY_V2G,
 	},
 	.power_manager_config = {
 		.power_manager_default_type = POWER_MANAGER_TYPE_NATIVE,

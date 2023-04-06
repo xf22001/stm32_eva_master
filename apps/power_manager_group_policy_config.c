@@ -6,7 +6,7 @@
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2023年01月03日 星期二 10时09分31秒
+ *   修改日期：2023年04月06日 星期四 09时12分47秒
  *   描    述：
  *
  *================================================================*/
@@ -65,7 +65,7 @@ static power_module_group_bind_node_t power_module_group_bind_node_0_1 = {
 
 static power_module_group_bind_node_t *power_module_group_bind_node_sz[] = {
 	&power_module_group_bind_node_0_0,
-	&power_module_group_bind_node_0_1,
+	//&power_module_group_bind_node_0_1,
 };
 
 static group_power_module_group_bind_info_t group_power_module_group_bind_info_0 = {
@@ -101,7 +101,7 @@ static channel_relay_fb_node_info_t channel_relay_fb_node_info_1 = {
 
 static channel_relay_fb_node_info_t *channel_relay_fb_node_info_sz[] = {
 	&channel_relay_fb_node_info_0,
-	&channel_relay_fb_node_info_1,
+	//&channel_relay_fb_node_info_1,
 };
 
 static power_manager_group_channel_relay_fb_info_t power_manager_group_channel_relay_fb_info_0 = {
@@ -148,14 +148,14 @@ void power_manager_restore_config(channels_info_t *channels_info)
 	for(i = 0; i < power_manager_settings->power_manager_group_number; i++) {
 		power_manager_group_settings_t *power_manager_group_settings = &power_manager_settings->power_manager_group_settings[i];
 
-		power_manager_group_settings->channel_number = 2;
+		power_manager_group_settings->channel_number = 1;
 		power_manager_group_settings->relay_board_number_per_channel = 0;
 
 		for(j = 0; j < power_manager_group_settings->relay_board_number_per_channel; j++) {
 			power_manager_group_settings->slot_per_relay_board[j] = 6;
 		}
 
-		power_manager_group_settings->power_module_group_number = 2;
+		power_manager_group_settings->power_module_group_number = 1;
 
 		for(j = 0; j < power_manager_group_settings->power_module_group_number; j++) {
 			power_module_group_settings_t *power_module_group_settings = &power_manager_group_settings->power_module_group_settings[j];
