@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2022年03月24日 星期四 11时12分20秒
+ *   修改日期：2023年04月06日 星期四 11时47分39秒
  *   描    述：
  *
  *================================================================*/
@@ -49,6 +49,9 @@ typedef enum {
 	VOICE_DATA_CARDREADER_CARD_ID_VALID,
 	VOICE_DATA_CARDREADER_CARD_ID_INVALID,
 	VOICE_DATA_SELECT_CHARGE_TYPE,
+	VOICE_DATA_CHARGER_NEED_RECONNECT,
+	VOICE_DATA_FAULT,
+	VOICE_DATA_OFFLINE,
 } voice_data_t;
 
 static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
