@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2023年02月21日 星期二 11时36分21秒
+ *   修改日期：2023年04月06日 星期四 08时54分23秒
  *   描    述：
  *
  *================================================================*/
@@ -235,7 +235,7 @@ void app(void const *argument)
 		snprintf(app_info->mechine_info.ip, sizeof(app_info->mechine_info.ip), "%d.%d.%d.%d", 10, 42, 0, 122);
 		snprintf(app_info->mechine_info.sn, sizeof(app_info->mechine_info.sn), "%d.%d.%d.%d", 255, 255, 255, 0);
 		snprintf(app_info->mechine_info.gw, sizeof(app_info->mechine_info.gw), "%d.%d.%d.%d", 10, 42, 0, 1);
-		app_info->mechine_info.dhcp_enable = 1;
+		app_info->mechine_info.dhcp_enable = 0;
 		app_info->mechine_info.request_type = REQUEST_TYPE_SSE;
 		app_info->mechine_info.reset_config = 0;
 		app_info->mechine_info.tz = 8;
