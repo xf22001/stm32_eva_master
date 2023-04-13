@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2023年02月06日 星期一 09时33分48秒
+#   修改日期：2023年04月07日 星期五 11时42分39秒
 #   描    述：
 #
 #================================================================
@@ -24,10 +24,10 @@ USER_C_INCLUDES += -Iapps/modules/app
 USER_C_INCLUDES += -Iapps/modules/app/charger
 USER_C_INCLUDES += -Iapps/modules/app/power_modules
 USER_C_INCLUDES += -Iapps/modules/app/power_manager
-ifneq ($(call ifdef_any_of,ENABLE_USB_OTG),)
+ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_INCLUDES += -Iapps/modules/app/ftpd
 endif
-USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
+#USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/app/net_client
 #USER_C_INCLUDES += -Iapps/modules/tests
 USER_C_INCLUDES += -IcJSON
@@ -87,8 +87,8 @@ USER_C_SOURCES += apps/modules/app/net_client/https.c
 USER_C_SOURCES += apps/modules/app/net_client/websocket.c
 USER_C_SOURCES += apps/modules/app/net_client/request_ocpp_1_6.c
 endif
-USER_C_SOURCES += apps/modules/app/ftp_client.c
-USER_C_SOURCES += apps/modules/app/ntp_client.c
+#USER_C_SOURCES += apps/modules/app/ftp_client.c
+#USER_C_SOURCES += apps/modules/app/ntp_client.c
 USER_C_SOURCES += apps/modules/app/net_callback.c
 ifeq ($(call ifdef_any_of,DISABLE_USB_OTG),)
 USER_C_SOURCES += apps/modules/app/ftpd/ftpd.c
@@ -261,7 +261,7 @@ USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/hw_adc.c
 USER_C_SOURCES += apps/modules/hardware/modbus_slave_txrx.c
-USER_C_SOURCES += apps/modules/hardware/modbus_master_txrx.c
+#USER_C_SOURCES += apps/modules/hardware/modbus_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/modbus_spec.c
 USER_C_SOURCES += apps/modules/hardware/storage.c
 ifneq ($(call ifdef_any_of,STORAGE_OPS_24LC128),)
@@ -304,7 +304,7 @@ endif
 #USER_C_SOURCES += apps/modules/tests/test_event.c
 #USER_C_SOURCES += apps/modules/tests/test_storage.c
 #USER_C_SOURCES += apps/modules/tests/test_can.c
-USER_C_SOURCES += cJSON/cJSON.c
+#USER_C_SOURCES += cJSON/cJSON.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
