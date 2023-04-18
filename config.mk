@@ -6,7 +6,7 @@
 #   文件名称：config.mk
 #   创 建 者：肖飞
 #   创建日期：2021年08月26日 星期四 11时10分19秒
-#   修改日期：2023年04月06日 星期四 15时54分19秒
+#   修改日期：2023年04月18日 星期二 09时11分28秒
 #   描    述：
 #
 #================================================================
@@ -63,7 +63,7 @@ CONFIG_LIST += CARD_READER_HANDLER_ZLG
 
 CONFIG_LIST += ENERGY_METER
 CONFIG_LIST += ENERGY_METER_DC
-#CONFIG_LIST += ENERGY_METER_AC
+CONFIG_LIST += ENERGY_METER_AC
 #CONFIG_LIST += ENERGY_METER_AC_HLW8032
 #CONFIG_LIST += ENERGY_METER_AC_SDM_220
 #CONFIG_LIST += ENERGY_METER_AC_SDM_630

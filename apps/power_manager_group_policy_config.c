@@ -1,12 +1,12 @@
 
 
 /*================================================================
- *   
- *   
+ *
+ *
  *   文件名称：power_manager_group_policy_config.c
  *   创 建 者：肖飞
  *   创建日期：2022年07月22日 星期五 12时30分44秒
- *   修改日期：2023年04月13日 星期四 14时52分29秒
+ *   修改日期：2023年04月18日 星期二 14时50分51秒
  *   描    述：
  *
  *================================================================*/
@@ -179,6 +179,12 @@ void channel_info_reset_default_config(channel_info_t *channel_info)
 	channel_settings->energy_meter_settings.energy_accuracy = channel_config->energy_meter_config.energy_accuracy;
 	channel_settings->energy_meter_settings.voltage_accuracy = channel_config->energy_meter_config.voltage_accuracy;
 	channel_settings->energy_meter_settings.curent_accuracy = channel_config->energy_meter_config.curent_accuracy;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x12;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x30;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x10;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x90;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x08;
+	channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x84;
 	channel_settings->function_board_type = channel_config->function_board_config.default_type;
 
 	channel_settings->max_output_power = 6000000;

@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2023年04月06日 星期四 15时46分18秒
+ *   修改日期：2023年04月18日 星期二 14时44分03秒
  *   描    述：
  *
  *================================================================*/
@@ -353,6 +353,53 @@ static void fn7(request_t *request)
 
 static void fn8(request_t *request)
 {
+	char *content = (char *)(request + 1);
+	int fn;
+	int id;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d%n", &fn, &id, &catched);
+
+	if(ret == 2) {
+		switch(id) {
+			case 0: {
+				channels_info_t *channels_info = get_channels();
+				channel_info_t *channel_info = channels_info->channel_info + 0;
+				channel_settings_t *channel_settings = &channel_info->channel_settings;
+
+				channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x12;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x30;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x10;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x90;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x08;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x84;
+
+				set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_DC);
+			}
+			break;
+
+			case 1: {
+				channels_info_t *channels_info = get_channels();
+				channel_info_t *channel_info = channels_info->channel_info + 0;
+				channel_settings_t *channel_settings = &channel_info->channel_settings;
+
+				channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x84;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x32;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x30;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x10;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x62;
+				channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x23;
+
+				set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_AC);
+			}
+			break;
+
+			default: {
+			}
+			break;
+		}
+	}
 }
 
 static void fn9(request_t *request)

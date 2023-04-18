@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2023年04月13日 星期四 14时04分54秒
+ *   修改日期：2023年04月18日 星期二 09时08分42秒
  *   描    述：
  *
  *================================================================*/
@@ -32,7 +32,7 @@ static energy_meter_config_item_t energy_meter_config_item_0_0 = {
 };
 
 static energy_meter_config_item_t energy_meter_config_item_0_1 = {
-	.type = ENERGY_METER_TYPE_PROXY,
+	.type = ENERGY_METER_TYPE_AC,
 	.huart = &huart3,
 };
 
@@ -53,7 +53,7 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB_V2G,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB,
 		.hcan_bms = &hcan2,
 		.output_relay_gpio_p = run_a_GPIO_Port,
 		.output_relay_pin_p = run_a_Pin,
@@ -70,8 +70,8 @@ static channel_config_t channel0_config = {
 	},
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_DC,
-		.request_addr = 1,
-		.slot = 0,
+		//.request_addr = 1,
+		//.slot = 0,
 		.energy_accuracy = VALUE_ACCURACY_2,
 		.voltage_accuracy = VALUE_ACCURACY_1,
 		.curent_accuracy = VALUE_ACCURACY_3,
@@ -88,32 +88,8 @@ static channel_config_t channel0_config = {
 	.cp_connect_state = GPIO_PIN_SET,
 };
 
-static energy_meter_config_item_t energy_meter_config_item_1_0 = {
-	.type = ENERGY_METER_TYPE_DC,
-	.huart = &huart3,
-};
-
-static energy_meter_config_item_t *energy_meter_config_item_1_sz[] = {
-	&energy_meter_config_item_1_0,
-};
-
-static channel_config_t channel1_config = {
-	.channel_type = CHANNEL_TYPE_PROXY_REMOTE,
-	.energy_meter_config = {
-		.default_type = ENERGY_METER_TYPE_DC,
-		.request_addr = 1,
-		.slot = 1,
-		.energy_accuracy = VALUE_ACCURACY_2,
-		.voltage_accuracy = VALUE_ACCURACY_1,
-		.curent_accuracy = VALUE_ACCURACY_3,
-		.size = ARRAY_SIZE(energy_meter_config_item_1_sz),
-		.items = energy_meter_config_item_1_sz,
-	},
-};
-
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
-	//&channel1_config,
 };
 
 static card_reader_config_item_t card_reader_config_item_0 = {
