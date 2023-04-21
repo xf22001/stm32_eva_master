@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年03月20日 星期一 11时12分02秒
+ *   修改日期：2023年04月21日 星期五 10时30分31秒
  *   描    述：
  *
  *================================================================*/
@@ -403,6 +403,7 @@ static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
 	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
 	account_response_info_t *account_response_info = (account_response_info_t *)chain_ctx;
+	channel_info_t *channel_info = (channel_info_t *)account_response_info->channel_info;
 	channels_notify_ctx_t channels_notify_ctx;
 
 	channels_notify_ctx.notify = CHANNELS_NOTIFY_CARD_VERIFY_RESULT;
@@ -411,16 +412,45 @@ static void account_request_cb(void *fn_ctx, void *chain_ctx)
 
 	switch(account_response_info->code) {
 		case ACCOUNT_STATE_CODE_OK: {
-			channel_info_t *channel_info = (channel_info_t *)account_response_info->channel_info;
 			debug("balance:%d", account_response_info->balance);
 			channel_info->channel_event_start_display.account_balance = account_response_info->balance;
 			memcpy(channel_info->channel_event_start_display.serial_no, account_response_info->serial_no, sizeof(channel_info->channel_event_start_display.serial_no));
 			display_start_channel(channel_info);
+			start_popup(channels_info, MODBUS_POPUP_TYPE_NONE, 0);
 		}
 		break;
 
 		default: {
+			uint8_t popup_type = MODBUS_POPUP_TYPE_NONE;
 			debug("code:%d", account_response_info->code);
+
+			switch(channel_info->channel_id) {
+				case 0: {
+					popup_type = MODBUS_POPUP_TYPE_AUTH_0;
+				}
+				break;
+
+				case 1: {
+					popup_type = MODBUS_POPUP_TYPE_AUTH_1;
+				}
+				break;
+
+				case 2: {
+					popup_type = MODBUS_POPUP_TYPE_AUTH_2;
+				}
+				break;
+
+				case 3: {
+					popup_type = MODBUS_POPUP_TYPE_AUTH_3;
+				}
+				break;
+
+				default: {
+				}
+				break;
+			}
+
+			start_popup(channels_info, popup_type, account_response_info->code);
 		}
 		break;
 	}

@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年03月20日 星期一 11时17分34秒
+ *   修改日期：2023年04月21日 星期五 17时20分23秒
  *   描    述：
  *
  *================================================================*/
@@ -22,6 +22,8 @@
 #if !defined(DISABLE_CARDREADER)
 #include "card_reader.h"
 #endif
+#include "net_client.h"
+#include "energy_meter.h"
 
 #define LOG_DISABLE
 #include "log.h"
@@ -426,6 +428,7 @@ static void modbus_data_action_power_module_info(channels_info_t *channels_info,
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, CHARGE_CONDITION_EXT): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, ACCOUNT_TYPE): \
 	case add_modbus_data_get_set_channel_item_field_case(channel_id, PASSWORD_CONFIRM): \
+	case add_modbus_data_get_set_channel_item_field_case(channel_id, V2G_MODE): \
 	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, ACCOUNT): \
 	case add_modbus_data_get_set_channel_item_buffer_field_case(channel_id, PASSWORD)
 
@@ -468,6 +471,7 @@ typedef enum {
 	add_channel_item_field_type_case(CHARGE_CONDITION_EXT),
 	add_channel_item_field_type_case(ACCOUNT_TYPE),
 	add_channel_item_field_type_case(PASSWORD_CONFIRM),
+	add_channel_item_field_type_case(V2G_MODE),
 	add_channel_item_field_type_case(ACCOUNT),
 	add_channel_item_field_type_case(PASSWORD),
 } channel_item_field_type_t;
@@ -545,6 +549,7 @@ typedef enum {
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, CHARGE_CONDITION_EXT); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, ACCOUNT_TYPE); \
 	add_get_channel_item_enum_info_field_case(channel_id, enum_info, PASSWORD_CONFIRM); \
+	add_get_channel_item_enum_info_field_case(channel_id, enum_info, V2G_MODE); \
 	add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, ACCOUNT); \
 	add_get_channel_item_word_enum_info_buffer_field_case(channel_id, enum_info, PASSWORD)
 
@@ -849,6 +854,55 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 
 		case add_channel_item_field_type_case(PASSWORD_CONFIRM): {
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.account_password_sync);
+		}
+		break;
+
+		case add_channel_item_field_type_case(V2G_MODE): {
+			modbus_data_value_r(modbus_data_ctx, channel_info->v2g_mode);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				uint8_t v2g_mode = modbus_data_ctx->value;
+
+				switch(v2g_mode) {
+					case V2G_MODE_NORMAL: {
+						channels_info_t *channels_info = get_channels();
+						channel_info_t *channel_info = channels_info->channel_info + 0;
+						channel_settings_t *channel_settings = &channel_info->channel_settings;
+
+						channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x12;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x30;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x10;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x90;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x08;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x84;
+
+						set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_DC);
+						channel_info->v2g_mode = v2g_mode;
+					}
+					break;
+
+					case V2G_MODE_DISCHARGE: {
+						channels_info_t *channels_info = get_channels();
+						channel_info_t *channel_info = channels_info->channel_info + 0;
+						channel_settings_t *channel_settings = &channel_info->channel_settings;
+
+						channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x84;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x32;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x30;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x10;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x62;
+						channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x23;
+
+						set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_AC);
+						channel_info->v2g_mode = v2g_mode;
+					}
+					break;
+
+					default: {
+					}
+					break;
+				}
+			}
 		}
 		break;
 
@@ -1358,6 +1412,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
+		case add_modbus_data_get_set_item_case(VER_MAJOR): {
+			modbus_data_value_r(modbus_data_ctx, VER_MAJOR);
+		}
+		break;
+
 		case add_modbus_data_get_set_item_case(VER_MINOR): {
 			modbus_data_value_r(modbus_data_ctx, VER_MINOR);
 		}
@@ -1368,8 +1427,27 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		case add_modbus_data_get_set_item_case(VER_MAJOR): {
-			modbus_data_value_r(modbus_data_ctx, VER_MAJOR);
+		case add_modbus_data_get_set_item_case(CARD_READER_STATE): {
+			card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+			modbus_data_value_r(modbus_data_ctx, card_reader_info->state);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(NET_CLIENT_CONNECT_STATE): {
+			net_client_info_t *net_client_info = get_net_client_info();
+			uint8_t client_state = CLIENT_DISCONNECT;
+
+			if(net_client_info != NULL) {
+				client_state = net_client_info->state;
+			}
+
+			modbus_data_value_r(modbus_data_ctx, client_state);
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(SYS_TICKS): {
+			uint16_t min = osKernelSysTick() / 60000;
+			modbus_data_value_r(modbus_data_ctx, min);
 		}
 		break;
 

@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年03月07日 星期二 09时02分31秒
+ *   修改日期：2023年04月21日 星期五 17时09分25秒
  *   描    述：
  *
  *================================================================*/
@@ -96,6 +96,7 @@ extern "C"
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##CHARGE_CONDITION_EXT), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##ACCOUNT_TYPE), \
 	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##PASSWORD_CONFIRM), \
+	add_enum_modbus_item(CHANNEL_##channel_id##_ITEM_##V2G_MODE), \
 	add_enum_modbus_buffer_with_base(CHANNEL_##channel_id##_ITEM_##ACCOUNT, 10, (base + 900)), \
 	add_enum_modbus_buffer(CHANNEL_##channel_id##_ITEM_##PASSWORD, 10)
 
@@ -237,6 +238,9 @@ typedef enum {
 	add_enum_modbus_item(VER_MAJOR),
 	add_enum_modbus_item(VER_MINOR),
 	add_enum_modbus_item(VER_REV),
+	add_enum_modbus_item(CARD_READER_STATE),
+	add_enum_modbus_item(NET_CLIENT_CONNECT_STATE),
+	add_enum_modbus_item(SYS_TICKS),
 
 	add_enum_modbus_item_with_base(CHANNELS_FAULT, 20401),
 
