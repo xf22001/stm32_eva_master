@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2023年03月18日 星期六 13时23分57秒
+ *   修改日期：2023年04月24日 星期一 09时21分39秒
  *   描    述：
  *
  *================================================================*/
@@ -40,16 +40,6 @@ typedef struct {
 } price_item_cache_t;
 
 typedef struct {
-	uint16_t sec;
-	uint16_t min;
-	uint16_t hour;
-	uint16_t day;
-	uint16_t mon;
-	uint16_t year;
-	uint16_t wday;
-} datetime_cache_t;
-
-typedef struct {
 	uint16_t year;
 	uint16_t mon;
 	uint16_t day;
@@ -71,16 +61,6 @@ typedef struct {
 	uint16_t reserved[24];
 } record_item_cache_t;
 
-typedef struct {
-	uint16_t setting_voltage;//0.1v
-	uint16_t output_voltage;//0.1v
-	uint16_t setting_current;//0.1a
-	uint16_t output_current;//0.1a
-	uint16_t state;//power_module_status_t
-	uint16_t group;
-	uint16_t connect_state;
-	uint16_t unused[3];
-} module_item_cache_t;
 
 #define RECORD_ITEM_CACHE_NUMBER 10
 #define MODULE_ITEM_CACHE_NUMBER 10
@@ -93,19 +73,14 @@ typedef struct {
 	uint16_t withholding_l;
 	uint16_t withholding_h;
 
-	uint8_t datetime_sync;
-	datetime_cache_t datetime_cache;
-
 	uint8_t record_sync;
 	uint8_t record_load_cmd;
 	record_dt_cache_t record_dt_cache;
 	record_item_cache_t record_item_cache[RECORD_ITEM_CACHE_NUMBER];
-	uint8_t module_sync;
-	uint8_t module_page;
-	module_item_cache_t module_item_cache[MODULE_ITEM_CACHE_NUMBER];
 
 	uint8_t popup_type;//modbus_popup_type_t
 	uint8_t popup_value;
+	uint8_t time_sync_to_display;
 } display_cache_channels_t;
 
 typedef struct {

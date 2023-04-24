@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.h
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时36分06秒
- *   修改日期：2023年04月21日 星期五 17时09分25秒
+ *   修改日期：2023年04月12日 星期三 09时26分23秒
  *   描    述：
  *
  *================================================================*/
@@ -135,6 +135,7 @@ typedef enum {
 	add_enum_modbus_item(REQUEST_POPUP_CLOSE),
 	add_enum_modbus_buffer(SYS_TIME, 6),
 	add_enum_modbus_item(TIME_SYNC),
+	add_enum_modbus_item(TIME_SYNC_TO_DISPLAY),
 
 	add_enum_modbus_item_with_base(CARD_READER_TYPE, 1350),
 	add_enum_modbus_item_with_base(MODULE_MAX_OUTPUT_VOLTAGE, 1400),

@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年04月21日 星期五 10时30分31秒
+ *   修改日期：2023年04月24日 星期一 15时39分42秒
  *   描    述：
  *
  *================================================================*/
@@ -51,12 +51,12 @@ void load_app_display_cache(app_info_t *app_info)
 		time_t ts = get_time();
 		struct tm tm = *localtime(&ts);
 
-		app_info->display_cache_app.sys_time[0] = tm.tm_sec;
-		app_info->display_cache_app.sys_time[1] = tm.tm_min;
-		app_info->display_cache_app.sys_time[2] = tm.tm_hour;
-		app_info->display_cache_app.sys_time[3] = tm.tm_mday;
-		app_info->display_cache_app.sys_time[4] = tm.tm_mon + 1;
-		app_info->display_cache_app.sys_time[5] = tm.tm_year + 1900;
+		app_info->display_cache_app.sys_time[0] = tm.tm_year + 1900;
+		app_info->display_cache_app.sys_time[1] = tm.tm_mon + 1;
+		app_info->display_cache_app.sys_time[2] = tm.tm_mday;
+		app_info->display_cache_app.sys_time[3] = tm.tm_hour;
+		app_info->display_cache_app.sys_time[4] = tm.tm_min;
+		app_info->display_cache_app.sys_time[5] = tm.tm_sec;
 	}
 
 }
@@ -105,12 +105,12 @@ void sync_app_display_cache(app_info_t *app_info)
 				time_t ts = get_time();
 				struct tm tm = *localtime(&ts);
 
-				app_info->display_cache_app.sys_time[0] = tm.tm_sec;
-				app_info->display_cache_app.sys_time[1] = tm.tm_min;
-				app_info->display_cache_app.sys_time[2] = tm.tm_hour;
-				app_info->display_cache_app.sys_time[3] = tm.tm_mday;
-				app_info->display_cache_app.sys_time[4] = tm.tm_mon + 1;
-				app_info->display_cache_app.sys_time[5] = tm.tm_year + 1900;
+				app_info->display_cache_app.sys_time[0] = tm.tm_year + 1900;
+				app_info->display_cache_app.sys_time[1] = tm.tm_mon + 1;
+				app_info->display_cache_app.sys_time[2] = tm.tm_mday;
+				app_info->display_cache_app.sys_time[3] = tm.tm_hour;
+				app_info->display_cache_app.sys_time[4] = tm.tm_min;
+				app_info->display_cache_app.sys_time[5] = tm.tm_sec;
 			}
 			break;
 
@@ -118,12 +118,12 @@ void sync_app_display_cache(app_info_t *app_info)
 				time_t ts;
 				struct tm tm = {0};
 
-				tm.tm_sec = app_info->display_cache_app.sys_time[0];
-				tm.tm_min = app_info->display_cache_app.sys_time[1];
-				tm.tm_hour = app_info->display_cache_app.sys_time[2];
-				tm.tm_mday = app_info->display_cache_app.sys_time[3];
-				tm.tm_mon = app_info->display_cache_app.sys_time[4] - 1;
-				tm.tm_year = app_info->display_cache_app.sys_time[5] - 1900;
+				tm.tm_year = app_info->display_cache_app.sys_time[0] - 1900;
+				tm.tm_mon = app_info->display_cache_app.sys_time[1] - 1;
+				tm.tm_mday = app_info->display_cache_app.sys_time[2];
+				tm.tm_hour = app_info->display_cache_app.sys_time[3];
+				tm.tm_min = app_info->display_cache_app.sys_time[4];
+				tm.tm_sec = app_info->display_cache_app.sys_time[5];
 				ts = mktime(&tm);
 
 				if(set_time(ts) == 0) {
@@ -360,34 +360,6 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 
 		channels_info->display_cache_channels.record_load_cmd = 0;
 	}
-
-	if(channels_info->display_cache_channels.module_sync == 1) {
-		uint8_t module_page = channels_info->display_cache_channels.module_page;
-		power_manager_info_t *power_manager_info = (power_manager_info_t *)channels_info->power_manager_info;
-		int base_offset = module_page * 10;
-		int i;
-
-		channels_info->display_cache_channels.module_sync = 0;
-
-		for(i = 0; i < MODULE_ITEM_CACHE_NUMBER; i++) {
-			int offset = base_offset + i;
-			module_item_cache_t *module_item_cache = &channels_info->display_cache_channels.module_item_cache[i];
-
-			if(offset < power_manager_info->power_modules_info->power_module_number) {
-				power_module_item_info_t *power_module_item_info = power_manager_info->power_module_item_info + offset;
-
-				module_item_cache->setting_voltage = power_module_item_info->status.setting_output_voltage;
-				module_item_cache->output_voltage = power_module_item_info->status.module_output_voltage;
-				module_item_cache->setting_current = power_module_item_info->status.setting_output_current;
-				module_item_cache->output_current = power_module_item_info->status.module_output_current;
-				module_item_cache->state = power_module_item_info->status.module_status;
-				module_item_cache->group = power_module_item_info->id;
-				module_item_cache->connect_state = power_module_item_info->status.connect_state;
-			} else {
-				memset(module_item_cache, 0, sizeof(module_item_cache_t));
-			}
-		}
-	}
 }
 
 void load_channel_display_cache(channel_info_t *channel_info)
@@ -557,6 +529,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 
 			start_ts = get_time();
 
+			channel_info->channel_event_start_display.account_type = channel_info->display_cache_channel.account_type;
 			channel_info->channel_event_start_display.charge_mode = channel_info->display_cache_channel.charge_mode;
 
 			switch(channel_info->display_cache_channel.charge_mode) {
@@ -602,7 +575,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				break;
 
 				default: {
-
+					channel_info->channel_event_start_display.start_time = start_ts;
 				}
 				break;
 			}
@@ -742,3 +715,36 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	record_item_cache->stop_reason = get_u16_0_from_u32(channel_record_item->stop_reason);
 }
 
+void display_system_time_update(channels_info_t *channels_info)
+{
+	time_t ts = get_time();
+	struct tm tm = *localtime(&ts);
+	app_info_t *app_info = get_app_info();
+
+	app_info->display_cache_app.sys_time[0] = tm.tm_year + 1900;
+	app_info->display_cache_app.sys_time[1] = tm.tm_mon + 1;
+	app_info->display_cache_app.sys_time[2] = tm.tm_mday;
+	app_info->display_cache_app.sys_time[3] = tm.tm_hour;
+	app_info->display_cache_app.sys_time[4] = tm.tm_min;
+	app_info->display_cache_app.sys_time[5] = tm.tm_sec;
+
+	channels_info->display_cache_channels.time_sync_to_display = 1;
+}
+
+void channel_card_authorize_start(channel_info_t *channel_info)
+{
+	channels_info_t *channels_info = (channels_info_t *)channel_info->channels_info;
+	card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+	card_reader_cb_t card_reader_cb;
+
+	channel_info->channel_event_start_display.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+	channel_info->channel_event_start_display.start_time = get_time();
+	channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
+	card_reader_cb.fn = card_reader_cb_start_fn;
+	card_reader_cb.fn_ctx = channel_info;
+	card_reader_cb.timeout = 5000;
+
+	if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
+		start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
+	}
+}

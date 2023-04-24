@@ -6,7 +6,7 @@
  *   文件名称：modbus_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2022年08月04日 星期四 10时34分58秒
- *   修改日期：2023年04月21日 星期五 17时20分23秒
+ *   修改日期：2023年04月22日 星期六 10时35分14秒
  *   描    述：
  *
  *================================================================*/
@@ -863,6 +863,8 @@ static void modbus_data_action_channel_items(channels_info_t *channels_info, mod
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				uint8_t v2g_mode = modbus_data_ctx->value;
 
+				debug("set v2g_mode:%d", v2g_mode);
+
 				switch(v2g_mode) {
 					case V2G_MODE_NORMAL: {
 						channels_info_t *channels_info = get_channels();
@@ -1206,6 +1208,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				app_info->display_cache_app.sys_time_sync = 1;
 			}
+		}
+		break;
+
+		case add_modbus_data_get_set_item_case(TIME_SYNC_TO_DISPLAY): {
+			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.time_sync_to_display);
 		}
 		break;
 
