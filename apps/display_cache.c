@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2023年04月24日 星期一 15时39分42秒
+ *   修改日期：2023年04月25日 星期二 09时34分22秒
  *   描    述：
  *
  *================================================================*/
@@ -589,7 +589,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 						channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
 						card_reader_cb.fn = card_reader_cb_start_fn;
 						card_reader_cb.fn_ctx = channel_info;
-						card_reader_cb.timeout = 5000;
+						card_reader_cb.timeout = 60000;
 
 						if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
 							start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
@@ -627,7 +627,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 							channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
 							card_reader_cb.fn = card_reader_cb_stop_fn;
 							card_reader_cb.fn_ctx = channel_info;
-							card_reader_cb.timeout = 5000;
+							card_reader_cb.timeout = 60000;
 
 							if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
 								start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
@@ -737,12 +737,16 @@ void channel_card_authorize_start(channel_info_t *channel_info)
 	card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
 	card_reader_cb_t card_reader_cb;
 
-	channel_info->channel_event_start_display.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+	channel_info->display_cache_channel.account_type = ACCOUNT_TYPE_CARD;
+	channel_info->display_cache_channel.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+
+	channel_info->channel_event_start_display.account_type = channel_info->display_cache_channel.account_type;
+	channel_info->channel_event_start_display.charge_mode = channel_info->display_cache_channel.charge_mode;
 	channel_info->channel_event_start_display.start_time = get_time();
 	channel_info->channel_event_start_display.start_reason = channel_record_item_start_reason(CARD);
 	card_reader_cb.fn = card_reader_cb_start_fn;
 	card_reader_cb.fn_ctx = channel_info;
-	card_reader_cb.timeout = 5000;
+	card_reader_cb.timeout = 60000;
 
 	if(start_card_reader_cb(card_reader_info, &card_reader_cb) == 0) {
 		start_popup(channels_info, MODBUS_POPUP_TYPE_SWIPE_CARD, channel_info->channel_id);
