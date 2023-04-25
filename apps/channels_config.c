@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2023年04月18日 星期二 09时08分42秒
+ *   修改日期：2023年04月25日 星期二 10时49分53秒
  *   描    述：
  *
  *================================================================*/
@@ -53,7 +53,7 @@ static function_board_config_item_t *function_board_config_item_0_sz[] = {
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_BMS_TYPE_GB,
+		.charger_type = CHANNEL_CHARGER_BMS_TYPE_NOBMS,
 		.hcan_bms = &hcan2,
 		.output_relay_gpio_p = run_a_GPIO_Port,
 		.output_relay_pin_p = run_a_Pin,

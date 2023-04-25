@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2023年04月22日 星期六 14时27分50秒
+ *   修改日期：2023年04月25日 星期二 11时10分35秒
  *   描    述：
  *
  *================================================================*/
@@ -362,43 +362,6 @@ static void fn8(request_t *request)
 	ret = sscanf(content, "%d %d%n", &fn, &id, &catched);
 
 	if(ret == 2) {
-		switch(id) {
-			case 0: {
-				channels_info_t *channels_info = get_channels();
-				channel_info_t *channel_info = channels_info->channel_info + 0;
-				channel_settings_t *channel_settings = &channel_info->channel_settings;
-
-				channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x12;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x30;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x10;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x90;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x08;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x84;
-
-				set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_DC);
-			}
-			break;
-
-			case 1: {
-				channels_info_t *channels_info = get_channels();
-				channel_info_t *channel_info = channels_info->channel_info + 0;
-				channel_settings_t *channel_settings = &channel_info->channel_settings;
-
-				channel_settings->energy_meter_settings.dlt_645_addr.data[5] = 0x84;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[4] = 0x32;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[3] = 0x30;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x10;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x62;
-				channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x23;
-
-				set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_AC);
-			}
-			break;
-
-			default: {
-			}
-			break;
-		}
 	}
 }
 
@@ -796,6 +759,9 @@ static void channel_set_v2g_mode(channel_info_t *channel_info, v2g_mode_t v2g_mo
 		channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x90;
 		channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x08;
 		channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x84;
+		channel_settings->energy_meter_settings.energy_accuracy = VALUE_ACCURACY_2;
+		channel_settings->energy_meter_settings.voltage_accuracy = VALUE_ACCURACY_1;
+		channel_settings->energy_meter_settings.curent_accuracy = VALUE_ACCURACY_3;
 
 		set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_DC);
 	} else {
@@ -809,6 +775,9 @@ static void channel_set_v2g_mode(channel_info_t *channel_info, v2g_mode_t v2g_mo
 		channel_settings->energy_meter_settings.dlt_645_addr.data[2] = 0x10;
 		channel_settings->energy_meter_settings.dlt_645_addr.data[1] = 0x62;
 		channel_settings->energy_meter_settings.dlt_645_addr.data[0] = 0x23;
+		channel_settings->energy_meter_settings.energy_accuracy = VALUE_ACCURACY_2;
+		channel_settings->energy_meter_settings.voltage_accuracy = VALUE_ACCURACY_1;
+		channel_settings->energy_meter_settings.curent_accuracy = VALUE_ACCURACY_5;
 
 		set_channel_energy_meter_type(channel_info, ENERGY_METER_TYPE_AC);
 	}
